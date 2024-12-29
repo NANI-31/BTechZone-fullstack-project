@@ -1,0 +1,55 @@
+.bookmarks-body {
+    /* border: 1px solid red; */
+    /* height: 100vh; */
+    padding: 10px;
+    padding-left: 90px;
+    padding-right: 90px;
+    color: #fff;
+}
+
+.bookmarks-header h1 {
+    font-size: 50px;
+    margin-bottom: 50px;
+}
+
+.bookmarks-ul {
+    display: flex;
+    flex-direction: row;
+    /* gap: 100px; */
+}
+
+.bookmarks-ul li {
+    padding: 10px;
+    width: 150px;
+    text-align: center;
+    border: 1px solid red;
+}
+
+.bookmarks-link-st {
+    border: 1px solid red;
+    height: 900px
+}
+
+.bookmarks-link-active {
+    background-color: #1d1f21;
+    /* box-shadow: 0px 0px 5px 3px #ffffff; */
+    color: #e8b336;
+}
+
+.bookmarks-rows {
+    display: none;
+    box-shadow: 0px 10px 30px 5px rgb(0, 0, 0);
+    /* border: 1px solid red; */
+    padding: 20px;
+    border-radius: 20px;
+    overflow: hidden;
+    /* z-index: 2; */
+    background: transparent;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(102, 102, 102, 1));
+
+    backdrop-filter: blur(3px);
+}
+
+.bookmark-show-active {
+    display: block;
+}

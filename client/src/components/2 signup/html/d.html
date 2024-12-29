@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="d.css" />
+    <script src="https://kit.fontawesome.com/9b3e996841.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body>
+    <div class="container">
+      <div id="signup-center">
+        <div class="signup-form-box">
+          <h2 class="signup-h2">
+            <span class="signup-multiple-text">Sign Up</span>
+          </h2>
+          <form name="signup" method="post" class="signup-form" onSubmit="{handleSubmit}">
+            <div class="signup-input-box b1">
+              <input type="text" name="username" id="username" required autocomplete="off" />
+              <label>Username</label>
+              <i class="fa-solid fa-user"></i>
+            </div>
+
+            <!---------------------------------- email ------------------------------------>
+
+            <div class="signup-input-box b2">
+              <input type="email" required name="email" id="email" />
+              <label>E-mail</label>
+              <i class="fa-solid fa-envelope" autoComplete="off"></i>
+            </div>
+
+            <!---------------------------------- phone ------------------------------------>
+
+            <div class="signup-input-box b3">
+              <input type="tel" name="phoneno" maxlength="10" required id="phoneno" autocomplete="off" />
+              <label>Phone No</label>
+              <i class="fa-solid fa-phone"></i>
+            </div>
+
+            <!---------------------------------- date ------------------------------------>
+
+            <div class="signup-input-box b4">
+              <input type="date" required name="BOD" id="BOD" autocomplete="off" />
+              <label>Birth Date</label>
+              <i class="fa-regular fa-calendar"></i>
+            </div>
+
+            <div class="signup-input-box bbbb">
+              <!-- <CustomDropdown
+                                    label="Select Branch"
+                                    options={['CSE', 'ECE', 'IT', 'Mechanical', 'Civil', 'EEE']}
+                                    selectedValue={selectedBranch}
+                                    onSelect={handleBranchChange}
+                                    isOpen={openDropdown === 'branch'}
+                                    toggleDropdown={() => toggleDropdown('branch')}
+                                    icon={<i class={`fas ${openDropdown === 'branch' ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>} // Replace with your desired Font Awesome icon classes
+                                /> -->
+            </div>
+            <!---------------------------------- pass1 ------------------------------------>
+
+            <div class="signup-input-box b5">
+              <input type="{inputTypes.input1}" required id="password" name="password1" autocomplete="off" />
+              <label>password</label>
+
+              <i class="{iconClass.iname1}" id="eyeicon" style="cursor: pointer"></i>
+            </div>
+
+            <!--------------------------------- pass2------------------------------------>
+
+            <div class="signup-input-box b6">
+              <input type="{inputTypes.input2}" required id="cpassword" name="password2" autocomplete="off" />
+
+              <label class=".q">confirm password</label>
+
+              <i class="{iconClass.iname2}" id="ceyeicon" style="cursor: pointer"></i>
+            </div>
+
+            <!---------------------------------- buttons ------------------------------------>
+
+            <div class="signup-input-box signup-ib1">
+              <button class="signup-btn" type="submit" name="submit">Sign Up</button>
+              <div class="signup-logreg-link">
+                <p>
+                  Already have an account?
+                  <a to="/login" class="register-link">Sign in</a>
+                </p>
+                <p><a to="/" class="register-link">Back to Home</a></p>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

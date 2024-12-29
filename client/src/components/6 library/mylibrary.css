@@ -1,0 +1,427 @@
+.mylib-nav {
+  /* overflow:hidden ; */
+  position: fixed;
+  top: 20px;
+  right: 2vh;
+  width: 80px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  z-index: 33;
+  /* border: 2px solid red; */
+}
+
+nav .nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(-45deg);
+}
+
+.nav-content .toggle-btn,
+.nav-content span a {
+  height: 70px;
+  width: 70px;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn {
+  /* border-radius: 50%; */
+}
+
+/* span i::after{
+    content: 'home';
+    position: absolute;
+    bottom: -20px;
+    left: -5px;
+
+    font-size: 20px;
+  } */
+.nav-content .toggle-btn {
+  font-size: 35px;
+  color: #0e2431;
+  z-index: 100;
+  cursor: pointer;
+  transform: rotate(-225deg);
+  transition: all 0.6s ease;
+}
+
+nav.open .toggle-btn {
+  transform: rotate(0deg);
+}
+
+.nav-content span {
+  position: absolute;
+  transition: all 0.6s ease;
+  opacity: 0;
+}
+
+nav.open .nav-content span {
+  transform: rotate(calc(var(--i) * (360deg/8))) translateY(120px);
+  opacity: 1;
+}
+
+.nav-content span a {
+  text-decoration: none;
+  transform: rotate(45deg);
+  position: relative;
+  /* top: 20px; */
+}
+
+.nav-content span a i {
+  position: relative;
+  /* top: 10px; */
+  font-style: normal;
+  font-size: 24px;
+  color: #0e2431;
+  transform: rotate(calc(var(--i) * (360deg/ -8)));
+  opacity: 0.8;
+  transition: 0.2s;
+}
+
+.nav-content span a:hover i {
+  opacity: 1;
+}
+
+body {
+  background-image: url('../required/images/dark-room-book-binding-8a0a8379f978f6e91823073acf7f3edd.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+
+}
+
+.my-lib-main {
+  /* background-color: #dbdcdd; */
+  font-family: sans-serif;
+  
+}
+
+.mylib-container {
+  max-width: 100%;
+  margin-left: 20vh;
+  margin-right: 20vh;
+  padding-top: 10vh;
+}
+
+.mylib-row {
+  /* border: 1px solid red; */
+  padding-bottom: 10vh;
+  padding-left: 20px;
+  display: flex;
+  gap: 50px;
+  flex-direction: column;
+
+}
+
+.mylib-rows {
+  box-shadow: 0px 10px 30px 5px rgb(0, 0, 0);
+  /* border: 1px solid red; */
+  padding: 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  /* z-index: 2; */
+  background: transparent;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(102, 102, 102, 1));
+
+  backdrop-filter: blur(3px);
+}
+
+.mylib-row1-header,
+.mylib-row2-header,
+.mylib-row3-header,
+.mylib-row4-header {
+  display: flex;
+  /* border: 1px solid red; */
+  /* justify-content: space-evenly; */
+  /* text-shadow: 0px 0px 20px #fff; */
+  font-size: 20px;
+  padding-top: 15px;
+  font-weight: 900;
+  padding-left: 16px;
+  padding-bottom: 25px;
+  margin-bottom: 20px;
+}
+
+.mylib-search {
+  /* border: 2px solid red; */
+  display: flex;
+  width: 39vh;
+  height: 40px;
+  position: absolute;
+  right: 5em;
+  background-color: #fff;
+  border-radius: 20px 20px 0 20px;
+  box-shadow: 0px 25px 30px -2px rgba(0, 0, 0, 0.8);
+  /* overflow: hidden; */
+}
+
+.mylib-search input {
+  width: 100%;
+  height: 100%;
+  /* background: rgba(255,255,255,0); */
+  border: none;
+  border-radius: 0px 0 0 0px;
+  border-radius: 20px 0 0 20px;
+  padding-left: 20px;
+  outline: none;
+  /* color: #fff; */
+  font-size: 15px;
+  border-bottom: 2px solid #fff;
+  /* background: linear-gradient(#081b29, #0ef, #081b29, #0ef); */
+  transition: .2s;
+
+}
+
+.mylib-search input:valid,
+.mylib-search input:focus {
+  border-radius: 20px 0px 0px 20px;
+  transition: .2s;
+}
+
+.mylib-search input:valid~.mylib-search-icon,
+.mylib-search input:focus~.mylib-search-icon {
+  border-radius: 0px 20px 0px 0px;
+  transition: .2s;
+}
+
+
+.mylib-search-icon {
+  /* border: 2px solid red; */
+  padding: 12px;
+  font-size: 10px;
+  display: flex;
+  border-radius: 0px 20px 0px 0px;
+  background-color: #0e2431;
+  color: #fff;
+  /* padding-left: 40px; */
+  justify-content: center;
+  align-items: center;
+  transition: .2s;
+
+  /* background-color: #fff; */
+}
+
+.mylib-search-icon i {
+  font-size: 20px;
+}
+
+.mylib-row1 ul {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mylib-row2 ul {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  /* border: 2px solid red; */
+}
+
+.mylib-row3 ul {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mylib-row4 ul {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.mylib-row1 ul li,
+.mylib-row2 ul li,
+.mylib-row3 ul li,
+.mylib-row4 ul li {
+  /* border: 2px solid red; */
+  padding-left: 15px;
+  margin-left: 50px;
+  margin-right: 10px;
+  height: 250px;
+  margin-bottom: 20px;
+}
+
+.mylib-row1 ul li .mylib-pdf,
+.mylib-row2 ul li .mylib-pdf,
+.mylib-row3 ul li .mylib-pdf,
+.mylib-row4 ul li .mylib-pdf {
+  /* border: 2px solid rgb(94, 246, 0); */
+  background-color: #e6ebef;
+  padding: 12px;
+  width: 150px;
+  height: 148px;
+  border-radius: 20px;
+  position: relative;
+  /* overflow: hidden; */
+}
+.options-icon{
+  display: block;
+  background-color: #456e90;
+  background-color: #e6ebef;
+  width: 28px;
+  height: 28px;
+  /* border-radius: 0 30%; */
+  border-bottom-left-radius: 30%;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  right: 0px;
+  top: 5px;
+  /* cursor: pointer; */
+  z-index: 10;
+}
+.options-icon i {
+  color: #0e2431;
+  font-size: 18px;
+}
+
+
+.options{
+  /* display: none; */
+  opacity: 0;
+  background-color: #000;
+  position: relative;
+  top: 5px;
+  right: 30px;
+  padding: 2px;
+  border-radius: 10px;
+  /* padding-left: 20px; */
+  transform: translateX(135px);
+  transition: .6s;
+}
+.ss{
+  /* border: 2px solid red; */
+  position: absolute;
+  top: 2px;
+  right: 10px;
+  padding-left: 31px;
+  padding-bottom: 7px;
+  overflow: hidden;
+
+}
+.active-options-list{
+  /* display: block; */
+  transform: translateX(0px);
+  opacity: 1;
+  transition: .5s;
+}
+.options p{
+  color: #fff;
+  padding: 5px;
+  padding-left: 15px;
+  padding-bottom: 10px;
+  /* text-align: center; */
+  padding-right: 10px;
+  /* border: 1px solid red; */
+  /* cursor: pointer; */
+}
+.options p:hover{
+  transform: scale(1.1);
+  /* text-shadow: 0px 0px 10px #ff0000; */
+  /* outline: 2px solid #fff; */
+}
+.options p i{
+  position: relative;
+  /* right: 20px; */
+  font-size: 20px;
+}
+.tips1, .tips2, .tips3{
+  position: absolute;
+  display: flex;
+  opacity: 0;
+  /* visibility: hidden; */
+  transition: .1s;
+}
+.tips1{
+  right: 65%;
+  top: 7%;
+}
+.tips2{
+  right: 65%;
+  top: 32%;
+}
+.tips3{
+  right: 65%;
+  top: 56%;
+}
+.tooltiptext1, .tooltiptext2, .tooltiptext3{
+  width: 120px;  
+  background-color: rgb(0, 0, 0);
+  color: #f3f3f3;
+  text-align: center;
+  border-radius: 7px;
+  padding: 5px 0;
+  right: 65%;  
+  user-select: none;
+  z-index: 55;
+}
+.tips-show-active{
+  opacity: 1;
+  transition: .5s ease .1s;
+}
+.tips1 .tooltiptext1::after,
+.tips2 .tooltiptext2::after,
+.tips3 .tooltiptext3::after {
+  content: " ";
+  position: absolute;
+  top: 50%; /* At the bottom of the tooltip */
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
+}
+
+
+.active-options{
+  display: block;
+}
+.mylib-in {
+  width: 124px;
+  height: 126px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  /* text-align: center; */
+}
+
+.mylib-in img {
+  width: 124px;
+  height: 126px;
+}
+
+.mylib-matter {
+  width: 154px;
+  text-align: center;
+  padding: 10px;
+  padding-top: 12px;
+  font-size: 16px;
+}
+
+.mylib-matter p {
+  font-size: large;
+  color: #ffffff;
+  margin-top: 2px;
+  letter-spacing: 1px;
+}
+
+.mylib-starts-branch {
+  color: #fff;
+  display: inline;
+  padding: 10px 30px 10px 30px;
+  /* padding-bottom: 20px; */
+  border-radius: 50px;
+  background-color: #000;
+  /* border: 2px solid red; */
+  /* background:  linear-gradient(45deg, #fff, #0e1538, #00ccff, #fff, #fff) ; */
+  /* -webkit-text-fill-color: transparent; */
+  /* -webkit-background-clip: text; */
+}

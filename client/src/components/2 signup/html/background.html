@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/9b3e996841.js" crossorigin="anonymous"></script>
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <link rel="stylesheet" href="back.css" />
+  </head>
+  <body>
+    <div class="container">
+      <img src="../../required/images/a.jpg" alt="" />
+      <div class="signup-center">
+        <div class="name">
+          <h1>Sign Up</h1>
+        </div>
+        <form class="signup-form">
+          <div class="signup-input-box">
+            <input type="text" required autocomplete="off" />
+            <label>Username</label>
+            <i class="fa-solid fa-user"></i>
+          </div>
+
+          <div class="signup-input-box">
+            <input type="email" required autocomplete="off" />
+            <label>E-mail</label>
+            <i class="fa-solid fa-envelope"></i>
+          </div>
+
+          <div class="signup-input-box">
+            <input type="tel" required autocomplete="off" />
+            <label>Phone No</label>
+            <i class="fa-solid fa-phone"></i>
+          </div>
+
+          <div class="signup-input-box">
+            <input type="date" required autocomplete="off" />
+            <label>Birth Date</label>
+            <i class="fa-regular fa-calendar"></i>
+          </div>
+
+          <!-- <div class="signup-input-box signup-select-branch">
+            <input type="select" required autocomplete="off" />
+            <label>select branch</label>
+            <ul id="list">
+              <li class="options">
+                <p>cse</p>
+              </li>
+              <li class="options">
+                <p>cse</p>
+              </li>
+              <li class="options">
+                <p>cse</p>
+              </li>
+              <li class="options">
+                <p>cse</p>
+              </li>
+              <li class="options">
+                <p>cse</p>
+              </li>
+            </ul>
+            <i class="fa-solid fa-chevron-down"></i>
+          </div> -->
+
+          <div class="signup-input-box signup-select-branch">
+            <div class="signup-user-change-custom-select">
+              <div class="signup-user-change-selected-option">
+                selectedValue
+                <span class="icon">
+                  <i class="fa-regular fa-calendar"></i>
+                </span>
+              </div>
+
+              <div class="signup-user-change-options">
+                <div class="signup-user-change-option">cse</div>
+                <div class="signup-user-change-option">cse</div>
+                <div class="signup-user-change-option">cse</div>
+                <div class="signup-user-change-option">cse</div>
+                <div class="signup-user-change-option">cse</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="signup-input-box">
+            <input type="password" required autocomplete="off" />
+            <label>password</label>
+            <i class="fa-solid fa-eye-slash"></i>
+          </div>
+
+          <div class="signup-input-box">
+            <input type="password" required autocomplete="off" />
+            <label>confirm password</label>
+            <i class="fa-solid fa-eye-slash"></i>
+          </div>
+
+          <div class="signup-input-box signup-ib1">
+            <button type="submit" class="signup-btn">Sign Up</button>
+            <div class="signup-logreg-link">
+              <p>
+                Already have an account?
+                <a to="/login" class="register-link">Sign in</a>
+              </p>
+              <p><a to="/" class="register-link">Back to Home</a></p>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

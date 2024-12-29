@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://kit.fontawesome.com/9b3e996841.js" crossorigin="anonymous"></script>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /> -->
+    <link rel="stylesheet" href="sidebar.css" />
+  </head>
+  <body>
+    <div class="sidebar-container">
+      <div class="sidebar">
+        <div class="logo">
+          <img src="user.png" alt="logo" />
+          <h2>siva</h2>
+        </div>
+        <ul class="links links1">
+          <li class="isActive sidebar-active">
+            <a to="/user">
+              <i class="fas fa-gauge sidebari"></i>
+              <p class="sidebar-names">Dashboard</p>
+            </a>
+          </li>
+          <li>
+            <a to="/userupload">
+              <i class="fas fa-cloud-arrow-up sidebari"></i>
+              <p class="sidebar-names">Upload</p>
+            </a>
+          </li>
+
+          <hr />
+
+          <li>
+            <a to="/mylibrary">
+              <i class="fas fa-book sidebari"></i>
+              <p class="sidebar-names">My Library</p>
+            </a>
+          </li>
+
+          <li>
+            <a to="/mybookmarks">
+              <i class="fa-solid fa-book-bookmark sidebari"></i>
+              <p class="sidebar-names">My Bookmarks</p>
+            </a>
+          </li>
+          <li>
+            <a to="/publiclibrary">
+              <i class="fas fa-swatchbook sidebari"></i>
+              <p class="sidebar-names">Public Library</p>
+            </a>
+          </li>
+
+          <hr />
+
+          <li>
+            <a to="/profile">
+              <i class="fas fa-user sidebari"></i>
+              <p class="sidebar-names">My Profile</p>
+            </a>
+          </li>
+
+          <li>
+            <a>
+              <i class="fas fa-envelope sidebari"></i>
+              <p class="sidebar-names">Message</p>
+            </a>
+          </li>
+
+          <hr />
+
+          <li class="logout-link">
+            <a to="/login">
+              <i class="fa-solid fa-arrow-right-from-bracket sidebari"></i>
+              <p class="sidebar-names">Logout</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </body>
+</html>
