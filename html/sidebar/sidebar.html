@@ -6,25 +6,30 @@
     <title>Document</title>
     <script src="https://kit.fontawesome.com/9b3e996841.js" crossorigin="anonymous"></script>
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /> -->
-    <link rel="stylesheet" href="sidebar.css" />
+    <link rel="stylesheet" href="ss.css" />
   </head>
   <body>
     <div class="sidebar-container">
       <div class="sidebar">
-        <div class="logo">
+        <div class="sidebar-logo">
           <img src="user.png" alt="logo" />
-          <h2>siva</h2>
+          <h2 class="sidebar-user-name">siva</h2>
         </div>
-        <ul class="links links1">
-          <li class="isActive sidebar-active">
+        <ul class="sidebar-links links1">
+          <li class="sidebar-active">
             <a to="/user">
-              <i class="fas fa-gauge sidebari"></i>
+              <span>
+                <i class="fas fa-gauge sidebari"></i>
+              </span>
               <p class="sidebar-names">Dashboard</p>
             </a>
           </li>
+
           <li>
             <a to="/userupload">
-              <i class="fas fa-cloud-arrow-up sidebari"></i>
+              <span>
+                <i class="fas fa-cloud-arrow-up sidebari"></i>
+              </span>
               <p class="sidebar-names">Upload</p>
             </a>
           </li>
@@ -33,20 +38,26 @@
 
           <li>
             <a to="/mylibrary">
-              <i class="fas fa-book sidebari"></i>
-              <p class="sidebar-names">My Library</p>
+              <span>
+                <i class="fas fa-book sidebari"></i>
+              </span>
+              <p class="sidebar-names">Library</p>
             </a>
           </li>
 
           <li>
             <a to="/mybookmarks">
-              <i class="fa-solid fa-book-bookmark sidebari"></i>
-              <p class="sidebar-names">My Bookmarks</p>
+              <span>
+                <i class="fa-solid fa-book-bookmark sidebari"></i>
+              </span>
+              <p class="sidebar-names">Bookmarks</p>
             </a>
           </li>
-          <li>
+          <li class="block">
             <a to="/publiclibrary">
-              <i class="fas fa-swatchbook sidebari"></i>
+              <span>
+                <i class="fas fa-swatchbook sidebari"></i>
+              </span>
               <p class="sidebar-names">Public Library</p>
             </a>
           </li>
@@ -55,21 +66,25 @@
 
           <li>
             <a to="/profile">
-              <i class="fas fa-user sidebari"></i>
-              <p class="sidebar-names">My Profile</p>
+              <span>
+                <i class="fas fa-user sidebari"></i>
+              </span>
+              <p class="sidebar-names">Profile</p>
             </a>
           </li>
 
-          <li>
+          <li class="block">
             <a>
-              <i class="fas fa-envelope sidebari"></i>
+              <span>
+                <i class="fas fa-envelope sidebari"></i>
+              </span>
               <p class="sidebar-names">Message</p>
             </a>
           </li>
 
           <hr />
 
-          <li class="logout-link">
+          <li class="logout-link block">
             <a to="/login">
               <i class="fa-solid fa-arrow-right-from-bracket sidebari"></i>
               <p class="sidebar-names">Logout</p>
