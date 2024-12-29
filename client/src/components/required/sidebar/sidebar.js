@@ -10,6 +10,39 @@ import defaultPic from '../images/sidebar/user.png';
 function Sidebar() {
   const location = useLocation();
   // const [profilePhoto, setProfilePhoto] = useState(null);
+  const [labels, setLabels] = useState({
+    bookmarks: 'My Bookmarks',
+    library: 'Library',
+    profile: 'My Profile',
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 950) {
+        setLabels({
+          bookmarks: 'Bookmarks',
+          library: 'Library',
+          profile: 'Profile',
+        });
+      } else {
+        setLabels({
+          bookmarks: 'My Bookmarks',
+          library: 'My Library',
+          profile: 'My Profile',
+        });
+      }
+    };
+    // Add event listener
+    window.addEventListener('resize', handleResize);
+
+    // Initial check
+    handleResize();
+
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
   const isActive = (path) => {
     return location.pathname === path ? 'sidebar-active' : '';
@@ -38,78 +71,103 @@ function Sidebar() {
     // };
   }, []);
   return (
-    <div className="sidebar">
-      <div className="logo">
-        <img src={user?.pic || defaultPic} alt="logo" />
-        <h2>{user?.name || ''}</h2>
-      </div>
-      <ul className="links links1">
-        <li className={isActive('/user')}>
-          <Link to="/user">
-            <i className="fas fa-gauge sidebari"></i>
-            <p className="sidebar-names">Dashboard</p>
-          </Link>
-        </li>
-        <li className={isActive('/userupload')}>
-          <Link to="/userupload">
-            <i className="fas fa-cloud-arrow-up sidebari"></i>
-            <p className="sidebar-names">Upload</p>
-          </Link>
-        </li>
+    <div className="sidebar-container">
+      <div className="sidebar">
+        <div className="sidebar-logo">
+          <img src={user?.pic || defaultPic} alt="logo" />
+          <h2 className="sidebar-user-name">{user?.name || ''}</h2>
+        </div>
+        <ul className="sidebar-links links1">
+          <li className={isActive('/user')}>
+            <Link to="/user" className="sidebar-a">
+              <span>
+                <i className="fas fa-gauge sidebari"></i>
+              </span>
+              <p className="sidebar-names">Dashboard</p>
+            </Link>
+          </li>
+          <li className={isActive('/userupload')}>
+            <Link to="/userupload" className="sidebar-a">
+              <span>
+                <i className="fas fa-cloud-arrow-up sidebari"></i>
+              </span>
 
-        <hr />
+              <p className="sidebar-names">Upload</p>
+            </Link>
+          </li>
 
-        <li className={isActive('/mylibrary')}>
-          <Link to="/mylibrary">
-            <i className="fas fa-book sidebari"></i>
-            {/* <p className={`sidebar-names ${isActivee('/mylibrary')}`}>My Library</p> */}
-            <p className="sidebar-names">My Library</p>
-          </Link>
-        </li>
+          <hr />
 
-        <li className={isActive('/mybookmarks')}>
-          <Link to="/mybookmarks">
-            <i className="fa-solid fa-book-bookmark sidebari"></i>
-            <p className="sidebar-names">My Bookmarks</p>
-          </Link>
-        </li>
-        <li className={isActive('/publiclibrary') || isActive('/studentlibrary') || isActive('/teacherlibrary') || isActive('/otherlibrary')}>
-          <Link to="/publiclibrary">
-            <i className="fas fa-swatchbook sidebari"></i>
-            <p className="sidebar-names">Public Library</p>
-          </Link>
-        </li>
+          <li className={isActive('/mylibrary')}>
+            <Link to="/mylibrary" className="sidebar-a">
+              <span>
+                <i className="fas fa-book sidebari"></i>
+              </span>
 
-        <hr />
+              {/* <p className={`sidebar-names ${isActivee('/mylibrary')}`}>My Library</p> */}
+              <p className="sidebar-names">{labels.library}</p>
+            </Link>
+          </li>
 
-        <li className={isActive('/profile')}>
-          <Link to="/profile">
-            <i className="fas fa-user sidebari"></i>
-            <p className="sidebar-names">My Profile</p>
-          </Link>
-        </li>
+          <li className={isActive('/mybookmarks')}>
+            <Link to="/mybookmarks" className="sidebar-a">
+              <span>
+                <i className="fa-solid fa-book-bookmark sidebari"></i>
+              </span>
 
-        {/* <li> <Link> <i className="fas fa-key sidebari"></i>
+              <p className="sidebar-names">{labels.bookmarks}</p>
+            </Link>
+          </li>
+          <li className={`isActive('/publiclibrary') || isActive('/studentlibrary') || isActive('/teacherlibrary') || isActive('/otherlibrary') block`}>
+            <Link to="/publiclibrary" className="sidebar-a">
+              <span>
+                <i className="fas fa-swatchbook sidebari"></i>
+              </span>
+
+              <p className="sidebar-names">Public Library</p>
+            </Link>
+          </li>
+
+          <hr />
+
+          <li className={isActive('/profile')}>
+            <Link to="/profile" className="sidebar-a">
+              <span>
+                <i className="fas fa-user sidebari"></i>
+              </span>
+
+              <p className="sidebar-names">{labels.profile}</p>
+            </Link>
+          </li>
+
+          {/* <li> <Link> <i className="fas fa-key sidebari"></i>
                     <p className="sidebar-names">Change Password</p>
                 </Link>
                 </li> */}
 
-        <li className={isActive('/message')}>
-          <Link>
-            <i className="fas fa-envelope sidebari"></i>
-            <p className="sidebar-names">Message</p>
-          </Link>
-        </li>
+          <li className={`{isActive('/message')} block`}>
+            <Link className="sidebar-a">
+              <span>
+                <i className="fas fa-envelope sidebari"></i>
+              </span>
 
-        <hr />
+              <p className="sidebar-names">Message</p>
+            </Link>
+          </li>
 
-        <li className="logout-link">
-          <Link to="/login">
-            <i className="fa-solid fa-arrow-right-from-bracket sidebari"></i>
-            <p className="sidebar-names">Logout</p>
-          </Link>
-        </li>
-      </ul>
+          <hr />
+
+          <li className="logout-link block">
+            <Link to="/login" className="sidebar-a">
+              <span>
+                <i className="fa-solid fa-arrow-right-from-bracket sidebari"></i>
+              </span>
+
+              <p className="sidebar-names">Logout</p>
+            </Link>
+          </li>
+        </ul>
+      </div>
     </div>
   );
 }
