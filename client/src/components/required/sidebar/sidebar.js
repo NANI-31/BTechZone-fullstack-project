@@ -14,6 +14,7 @@ function Sidebar() {
     bookmarks: 'My Bookmarks',
     library: 'Library',
     profile: 'My Profile',
+    block: 'block',
   });
 
   useEffect(() => {
@@ -23,6 +24,7 @@ function Sidebar() {
           bookmarks: 'Bookmarks',
           library: 'Library',
           profile: 'Profile',
+          block: 'block',
         });
       } else {
         setLabels({
@@ -44,8 +46,13 @@ function Sidebar() {
     };
   }, []);
 
+  const paths = ['chatting', 'publiclibrary', 'studentlibrary', 'teacherlibrary', 'otherlibrary'];
   const isActive = (path) => {
-    return location.pathname === path ? 'sidebar-active' : '';
+    if (window.innerWidth <= 950) {
+      return location.pathname === path ? 'sidebar-active block' : '';
+    } else {
+      return location.pathname === path ? 'sidebar-active' : '';
+    }
   };
 
   const [user, setUser] = useState(null);
@@ -145,10 +152,10 @@ function Sidebar() {
                 </Link>
                 </li> */}
 
-          <li className={`{isActive('/message')} block`}>
-            <Link className="sidebar-a">
+          <li className={isActive('/chatting')}>
+            <Link to="/chatting" className="sidebar-a">
               <span>
-                <i className="fas fa-envelope sidebari"></i>
+                <i className="fas fa-comment-dots sidebari"></i>
               </span>
 
               <p className="sidebar-names">Message</p>
