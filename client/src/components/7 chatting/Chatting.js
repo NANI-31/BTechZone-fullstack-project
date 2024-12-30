@@ -4,7 +4,7 @@ import './chatting.css';
 function Chatting() {
   return (
     <>
-      <div className="chatting-container">
+      <div className="message-container">
         <Groups />
         <ChatBody />
         {/* <CreatePlus /> */}

@@ -13,8 +13,8 @@ function Groups() {
     bg: '#f1f7fe',
   });
   const [chatGroupCreateColor, setChatGroupCreateColor] = useState({
-    color: '#333',
-    bg: '#f1f7fe',
+    color: '#f1f7fe',
+    bg: 'transparent',
   });
 
   const handleGroups = () => {
@@ -111,13 +111,13 @@ function Groups() {
       )}
       <div className="groups-icons">
         <div className="groups-icons-container">
-          <div className="groups-svg" onClick={handleGroups} style={{ color: chatGroupColor.color, backgroundColor: chatGroupColor.bg }}>
+          <div className={isGroups ? 'groups-svg-active groups-svg' : 'groups-svg'} onClick={handleGroups}>
             <GroupsIcon />
           </div>
           <p className="groups-icons-container-name">Groups</p>
         </div>
         <div className="groups-icons-container">
-          <div className="groups-svg" onClick={handleCreate} style={{ color: chatGroupCreateColor.color, backgroundColor: chatGroupCreateColor.bg }}>
+          <div className={isCreate ? 'groups-svg-active groups-svg' : 'groups-svg'} onClick={handleCreate}>
             <CreatePlus />
           </div>
           <p className="groups-icons-container-name">Create</p>
