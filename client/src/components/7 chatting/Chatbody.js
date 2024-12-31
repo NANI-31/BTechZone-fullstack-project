@@ -1,7 +1,12 @@
 import GroupsIconTwo from '../required/svg/GroupsIconTwo';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { BsCameraVideo } from 'react-icons/bs';
 function ChatBody() {
+  const [inputValue, setInputValue] = useState('');
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
   return (
     <div className="chatting-container">
       <div className="chatting-top">
@@ -27,12 +32,25 @@ function ChatBody() {
       <div className="chatting-msgs">chat msgs</div>
       <div className="chatting-bottom">
         <div className="chatting-bottom-container">
-          <i className="fa-solid fa-smile"></i>
-          <i className="fa-solid fa-paperclip"></i>
-          <div className="chatting-bottom-container-input">
-            <input type="text" placeholder="Type a message" />
+          <div className="chatting-bottom-container-icon">
+            <i className="fa-solid fa-smile"></i>
           </div>
-          <i className="fa-solid fa-microphone"></i>
+          <div className="chatting-bottom-container-icon">
+            <i className="fa-solid fa-paperclip"></i>
+          </div>
+          <div className="chatting-bottom-container-input">
+            <input type="text" placeholder="Type a message" value={inputValue} onChange={handleInputChange} />
+          </div>
+
+          {inputValue.trim() ? (
+            <div className="chatting-bottom-container-icon">
+              <i className="fa-solid fa-paper-plane"></i>
+            </div>
+          ) : (
+            <div className="chatting-bottom-container-icon">
+              <i className="fa-solid fa-microphone"></i>
+            </div>
+          )}
         </div>
       </div>
     </div>

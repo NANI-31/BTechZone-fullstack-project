@@ -8,38 +8,14 @@ function Groups() {
   const [inputValue, setInputValue] = useState('');
   const [isGroups, setIsGroups] = useState(true);
   const [isCreate, setIsCreate] = useState(false);
-  const [chatGroupColor, setChatGroupColor] = useState({
-    color: '#333',
-    bg: '#f1f7fe',
-  });
-  const [chatGroupCreateColor, setChatGroupCreateColor] = useState({
-    color: '#f1f7fe',
-    bg: 'transparent',
-  });
 
   const handleGroups = () => {
     setIsGroups(true);
     setIsCreate(false);
-    setChatGroupColor({
-      color: '#333',
-      bg: '#f1f7fe',
-    });
-    setChatGroupCreateColor({
-      color: '#f1f7fe',
-      bg: 'transparent',
-    });
   };
   const handleCreate = () => {
     setIsGroups(false);
     setIsCreate(true);
-    setChatGroupColor({
-      color: '#f1f7fe',
-      bg: 'transparent',
-    });
-    setChatGroupCreateColor({
-      color: '#333',
-      bg: '#f1f7fe',
-    });
   };
 
   const handleInputChange = (e) => {

@@ -158,7 +158,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 0px 10px;
   background-color: #292b37;
   border-top: 1px solid #000000;
   /* width: 100%; */
@@ -211,31 +211,66 @@
 .chatting-bottom-container {
   display: flex;
   align-items: center;
-  gap: 16px;
+  /* gap: 16px; */
+  width: 100%;
   color: #ffffff;
-  font-size: 15px;
+  /* font-size: 15px; */
   font-weight: bolder;
   /* border: 1px solid red; */
+  /* border: 1px solid red; */
+}
+.chatting-bottom-container-icon i {
+  font-size: 20px;
+  color: #ffffff;
+  /* margin-right: 10px; */
+  /* padding: 10px; */
+}
+.chatting-bottom-container-icon {
+  padding: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10%;
+  /* background-color: #838386; */
+  /* border: 1px solid red; */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #007bff;
+}
+.chatting-bottom-container-icon:hover {
+  background-color: #ffffff;
+}
+.chatting-bottom-container-icon:hover i {
+  color: #1f2029;
 }
 .chatting-bottom-container .chatting-bottom-container-input {
-  flex: 1;
+  /* flex: 2; */
+  width: 88%;
   height: 40px;
-  padding: 0 10px;
+  /* padding: 0 10px; */
   border: none;
+  outline: none;
   border-radius: 20px;
   background-color: #f5f5f5;
-  font-size: 14px;
-  color: #333;
-  border: 1px solid red;
-  width: 100%;
+  display: flex;
+  margin: 0 10px 0 5px;
+  align-items: center;
+  padding: 20px 20px;
 }
 .chatting-bottom-container-input input {
   /* height: 100%; */
-  /* border: none; */
-  /* outline: none; */
-  /* background-color: #f5f5f5; */
+  outline: none;
+  background-color: #f5f5f5;
   /* font-size: 14px; */
   color: #333;
+  width: 100%;
+  height: 40px;
+  /* padding: 0 10px; */
+  outline: none;
+  border: none;
+  font-size: 16px;
+  color: #333;
+  /* border: 1px solid red; */
 }
 
 /* .chatting-bottom-container .chatting-bottom-container-input:focus {
