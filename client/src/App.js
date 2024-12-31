@@ -25,6 +25,7 @@ import Tlibrary from './components/6 library/teacherlib/teacherlib';
 import Userprofile from './components/5 user/profile/profile';
 import Pverification from './components/5 user/profile/pverification';
 import Chatting from './components/7 chatting/Chatting';
+import Testing from './components/5 user/testing';
 
 function App() {
   return (
@@ -50,6 +51,7 @@ function App() {
         <Route path="/profile" element={<UserProfileWithSidebar />} />
         <Route path="/pverification" element={<Pverification />}></Route>
         <Route path="/chatting" element={<ChattingWithSidebar />}></Route>
+        {/* <Route path="/chatting" element={<Testing />}></Route> */}
       </Routes>
     </BrowserRouter>
   );

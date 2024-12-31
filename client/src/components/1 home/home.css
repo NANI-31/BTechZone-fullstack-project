@@ -237,7 +237,8 @@
   transition: 0.1s;
 }
 
-i {
+.home-hero-section i,
+.home-footer i {
   font-size: 30px;
   transition: 0.1s;
 }
@@ -931,7 +932,7 @@ form button {
 .home-input-box textarea {
   height: 100px;
 }
-.home-inputbox input:valid ~ span,
+.home-input-box input:valid ~ span,
 .home-input-box input:focus ~ span {
   /* color: #fff;  */
   transform: translateX(20px) translateY(-7px);
@@ -942,8 +943,8 @@ form button {
   color: #000;
   font-size: 15px;
 }
-.home-inputbox textarea,
-input:valid,
+.home-input-box textarea,
+.home-input-box input:valid,
 .home-input-box input:focus,
 .home-input-box textarea:focus {
   border: 2px solid #000000;
@@ -1003,7 +1004,7 @@ input:valid,
   font-size: 20px;
 }
 .home-contact-info i,
-p {
+.home-contact-info p {
   color: #fff;
 }
 .home-contact-name,
