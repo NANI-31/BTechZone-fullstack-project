@@ -9,6 +9,7 @@ import { useDispatch } from 'react-redux';
 // import './components/3 login/login.css';
 
 function Login() {
+	const dispatch = useDispatch();
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
 	const [modalOpene, setModalOpene] = useState(false);
@@ -43,7 +44,8 @@ function Login() {
 			} else if (response.data === 'User not registered') {
 				openModale();
 			} else {
-				sessionStorage.setItem('userdata', JSON.stringify(response.data));
+				dispatch(setUser(response.data.responseData));
+				sessionStorage.setItem('userdata', JSON.stringify(response.data.responseData));
 				setCustomeCookie('userToken', response.data.token);
 				console.log(JSON.parse(sessionStorage.getItem('userdata')));
 				navigate('/user');

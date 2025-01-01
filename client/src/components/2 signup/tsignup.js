@@ -100,9 +100,10 @@ function TSignup() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const branch = selectedBranch;
+		const person = 'teacher';
 		try {
 			console.log('teachet signup client: ', name, email, password, phoneno, branch);
-			const response = await axiosInstance.post('signup', { name, email, password, phoneno, branch });
+			const response = await axiosInstance.post('signup', { name, email, password, phoneno, branch, person });
 			console.log(response.data, 'signup clinet');
 			navigate('/tverification', { state: response.data });
 			// navigate('/tverification');

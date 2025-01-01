@@ -1,7 +1,7 @@
 const { sendEmailVerification, otpStore } = require('../utils/sendEmail');
 const teachersdetails = require('../schemas/teachers/teachersDetails');
 const studentsdetails = require('../schemas/students/studentsDetails');
-// const jwt = require('jsonwebtoken');
+
 const bycrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie-parser');
@@ -126,12 +126,56 @@ exports.login = async (req, res) => {
 			email: user.email,
 			phoneno: user.phoneno,
 			branch: user.branch,
+			person: user.person,
 		};
-		console.log('3');
+		console.log(responseData);
 		res.status(200).json({ message: 'Login successful', token, responseData });
 	} catch (err) {
 		console.log(err);
 		res.status(400).json({ message: err.message });
+	}
+};
+
+exports.profileChange = async (req, res) => {
+	const imgBuffer = req.file?.buffer;
+	const imgg = req.file?.mimetype;
+	const { name, phoneno, branch, email, person } = req.body;
+
+	const model = person === 'teacher' ? teachersdetails : studentsdetails;
+
+	try {
+		console.log(email);
+		const existingUser = await model.findOne({ email });
+
+		if (!existingUser) {
+			return res.status(404).send({ message: 'User not found', status: 'error' });
+		}
+
+		// Check if name and phone number already exist
+		const existingName = await model.findOne({ name });
+
+		// Update fields if they are present
+		if (imgBuffer && imgg) {
+			existingUser.pic = imgBuffer;
+			existingUser.contentType = imgg;
+		}
+
+		if (phoneno) existingUser.phoneno = phoneno;
+		if (branch) existingUser.branch = branch;
+
+		// Save updated user data
+		await existingUser.save();
+
+		let message = 'Profile updated successfully';
+		if (existingName) message += ' but not name because it already exists';
+
+		console.log(imgg);
+		console.log(existingUser.name);
+
+		res.send({ message, status: 'success' });
+	} catch (err) {
+		console.error(err);
+		res.status(500).send({ message: 'Error updating profile', status: 'error' });
 	}
 };
 
