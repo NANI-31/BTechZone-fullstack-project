@@ -121,12 +121,19 @@ exports.login = async (req, res) => {
 			sameSite: 'Strict',
 			maxAge: 3600000, // 1 hour
 		});
+		let imageData = '';
+		if (user.pic && user.contentType) {
+			const base64Data = user.pic.toString('base64');
+			const contentType = user.contentType;
+			imageData = `data:${contentType};base64,${base64Data}`;
+		}
 		const responseData = {
 			name: user.name,
 			email: user.email,
 			phoneno: user.phoneno,
 			branch: user.branch,
 			person: user.person,
+			pic: imageData,
 		};
 		console.log(responseData);
 		res.status(200).json({ message: 'Login successful', token, responseData });
@@ -160,7 +167,7 @@ exports.profileChange = async (req, res) => {
 			existingUser.contentType = imgg;
 		}
 
-		if (phoneno) existingUser.phoneno = phoneno;
+		// if (phoneno) existingUser.phoneno = phoneno;
 		if (branch) existingUser.branch = branch;
 
 		// Save updated user data
@@ -171,10 +178,24 @@ exports.profileChange = async (req, res) => {
 
 		console.log(imgg);
 		console.log(existingUser.name);
+		let imageData = '';
+		if (existingUser.pic && existingUser.contentType) {
+			const base64Data = existingUser.pic.toString('base64');
+			const contentType = existingUser.contentType;
+			imageData = `data:${contentType};base64,${base64Data}`;
+		}
+		const responseData = {
+			name: existingUser.name,
+			email: existingUser.email,
+			phoneno: existingUser.phoneno,
+			branch: existingUser.branch,
+			person: existingUser.person,
+			pic: imageData,
+		};
 
-		res.send({ message, status: 'success' });
+		res.send({ message, status: 'success', responseData });
 	} catch (err) {
-		console.error(err);
+		console.error('profilechange-failed', err);
 		res.status(500).send({ message: 'Error updating profile', status: 'error' });
 	}
 };

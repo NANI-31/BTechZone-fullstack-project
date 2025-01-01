@@ -3,7 +3,8 @@ import './profile.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import pic from './a.jpg';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/states/userSlice';
 import { axiosInstance } from '../../utils/axiosConfig';
 const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggleDropdown, icon }) => {
 	const handleOptionClick = (option) => {
@@ -32,13 +33,14 @@ const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggl
 
 function Profile() {
 	const userData = useSelector((state) => state.user);
+	const dispatch = useDispatch();
 	const [selectedPhone, setSelectedPhone] = useState(null);
 	const [selectedName, setSelectedName] = useState('');
 	const [selectedYear, setSelectedYear] = useState('Select Year');
 	const [selectedSemester, setSelectedSemester] = useState('Select Semester');
 	const [selectedBranch, setSelectedBranch] = useState('Select Branch');
 	const [openDropdown, setOpenDropdown] = useState(null);
-	const [oemail, setOemail] = useState();
+	const [oemail, setOemail] = useState(userData?.email);
 	const [cemail, setCemail] = useState();
 	const [opass, setOpass] = useState();
 	const [cpass, setCpass] = useState();
@@ -101,40 +103,8 @@ function Profile() {
 		setActiveTab(tabName);
 	};
 
-	const [user, setUser] = useState(null);
-	const [imageSrc, setImageSrc] = useState('');
-
-	useEffect(() => {
-		// Fetch image data when component mounts
-		async function fetchImageData() {
-			try {
-				const email = 'education13331@gmail.com';
-			} catch (error) {
-				console.error('Error fetching image data:', error);
-			}
-		}
-
-		fetchImageData();
-	}, []);
-	const newUser = JSON.parse(sessionStorage.getItem('userdata'));
-	useEffect(() => {
-		async function fetchData() {
-			if (newUser) {
-				try {
-					const response = await axios.get(`http://localhost:5000/api/image/${newUser.email}`);
-					if (response.data) {
-						setImageSrc(response.data);
-					}
-					setOemail(newUser.email);
-					setUser(newUser);
-				} catch (error) {
-					console.error('Error fetching image data:', error);
-				}
-			}
-		}
-
-		fetchData();
-	}, []);
+	const imageSrc = userData?.pic;
+	// setImageSrc(userData?.pic);
 	const profilemailchange = async (e) => {
 		e.preventDefault();
 		if (oemail === cemail) {
@@ -232,20 +202,22 @@ function Profile() {
 		e.preventDefault();
 		const formData = new FormData();
 		formData.append('name', selectedName);
-		formData.append('phoneno', selectedPhone !== '' ? selectedPhone : null);
+		// formData.append('phoneno', selectedPhone !== '' ? selectedPhone : null);
+		formData.append('phoneno', selectedPhone);
 		formData.append('year', selectedYear);
 		formData.append('semester', selectedSemester);
 		formData.append('branch', selectedBranch);
 		formData.append('image', imageFile);
-		formData.append('email', newUser.email);
-		formData.append('person', newUser.person);
-		console.log(newUser.email);
+		formData.append('email', userData.email);
+		formData.append('person', userData.person);
+		console.log(userData.email);
 		try {
-			const response = await axios.post('http://localhost:5000/profilechange', formData, {
+			const response = await axiosInstance.post('/profileChange', formData, {
 				headers: { 'Content-Type': 'multipart/form-data' },
 			});
-			if (response.data.s === 'success') {
+			if (response.data.status === 'success') {
 				console.log('success');
+				dispatch(setUser(response.data.responseData));
 			} else {
 				console.log('fail');
 			}
@@ -283,31 +255,35 @@ function Profile() {
 						<div className="profile-col">
 							<div className="profile-col1">
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={user?.name || ''} />
+									<input type="text" name="username" readOnly value={userData?.name || ''} />
 									<label>Username</label>
 									<i className="fa-solid fa-user"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={user?.email || ''} />
+									<input type="text" name="username" readOnly value={userData?.email || ''} />
 									<label>E-mail</label>
 									<i className="fa-solid fa-envelope"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={user?.phoneno || ''} />
+									<input type="text" name="username" readOnly value={userData?.phoneNo || ''} />
 									<label>Phone</label>
 									<i className="fa-solid fa-phone"></i>
 								</div>
 								<div className="profile-row1">
+									{userData?.person === 'student' && (
+										<>
+											<div className="profile-input-box b1">
+												<input type="text" name="username" readOnly value={userData?.year || ''} />
+												<label>Year</label>
+											</div>
+											<div className="profile-input-box b1">
+												<input type="text" name="username" readOnly value={userData?.sem || ''} />
+												<label>semester</label>
+											</div>
+										</>
+									)}
 									<div className="profile-input-box b1">
-										<input type="text" name="username" readOnly value={user?.year || ''} />
-										<label>Year</label>
-									</div>
-									<div className="profile-input-box b1">
-										<input type="text" name="username" readOnly value={user?.sem || ''} />
-										<label>semester</label>
-									</div>
-									<div className="profile-input-box b1">
-										<input type="text" name="username" readOnly value={user?.branch || ''} />
+										<input type="text" name="username" readOnly value={userData?.branch || ''} />
 										<label>branch</label>
 									</div>
 								</div>
@@ -327,35 +303,39 @@ function Profile() {
 						<div className="profile-col">
 							<div className="profile-col1">
 								<div className="profile-input-box-change b1">
-									<input type="text" name="username" placeholder={user?.name || ''} onChange={(e) => setSelectedName(e.target.value)} />
+									<input type="text" name="username" placeholder={userData?.name || ''} onChange={(e) => setSelectedName(e.target.value)} />
 									<label>Username</label>
 									<i className="fa-solid fa-user"></i>
 								</div>
 								<div className="profile-input-box-change b1">
-									<input type="tel" name="username" placeholder={user?.phoneno || ''} onChange={(e) => setSelectedPhone(e.target.value)} />
+									<input type="tel" name="username" placeholder={userData?.phoneNo || ''} onChange={(e) => setSelectedPhone(e.target.value)} />
 									<label>Phone No</label>
 									<i className="fa-solid fa-phone"></i>
 								</div>
 								<div className="profile-row1">
 									<div className="profile-input-box-change cus b1">
-										<CustomDropdown
-											label="Select Year"
-											options={['1st Year', '2nd Year', '3rd Year', '4th Year']}
-											selectedValue={selectedYear}
-											onSelect={handleYearChange}
-											isOpen={openDropdown === 'year'}
-											toggleDropdown={() => toggleDropdown('year')}
-											icon={<i className={`fas ${openDropdown === 'year' ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>} // Replace with your desired Font Awesome icon classes
-										/>
-										<CustomDropdown
-											label="Select Semester"
-											options={['Semester 1', 'Semester 2']}
-											selectedValue={selectedSemester}
-											onSelect={handleSemesterChange}
-											isOpen={openDropdown === 'semester'}
-											toggleDropdown={() => toggleDropdown('semester')}
-											icon={<i className={`fas ${openDropdown === 'semester' ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>} // Replace with your desired Font Awesome icon classes
-										/>
+										{userData?.person === 'student' && (
+											<>
+												<CustomDropdown
+													label="Select Year"
+													options={['1st Year', '2nd Year', '3rd Year', '4th Year']}
+													selectedValue={selectedYear}
+													onSelect={handleYearChange}
+													isOpen={openDropdown === 'year'}
+													toggleDropdown={() => toggleDropdown('year')}
+													icon={<i className={`fas ${openDropdown === 'year' ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>} // Replace with your desired Font Awesome icon classes
+												/>
+												<CustomDropdown
+													label="Select Semester"
+													options={['Semester 1', 'Semester 2']}
+													selectedValue={selectedSemester}
+													onSelect={handleSemesterChange}
+													isOpen={openDropdown === 'semester'}
+													toggleDropdown={() => toggleDropdown('semester')}
+													icon={<i className={`fas ${openDropdown === 'semester' ? 'fa-chevron-up' : 'fa-chevron-down'}`}></i>} // Replace with your desired Font Awesome icon classes
+												/>
+											</>
+										)}
 										<CustomDropdown
 											label="Select Branch"
 											options={['CSE', 'ECE', 'IT', 'Mechanical', 'Civil', 'EEE']}
@@ -389,12 +369,12 @@ function Profile() {
 							<form method="post" onSubmit={profilemailchange}>
 								<div className="profile-email-change">
 									<div className="profile-input-box-account b1">
-										<input type="text" name="username" readOnly value={user?.email || ''} />
+										<input type="text" name="username" readOnly value={userData?.email || ''} />
 										<label>Email</label>
 										<i className="fa-solid fa-envelope"></i>
 									</div>
 									<div className="profile-input-box-account b1">
-										<input type="text" name="username" placeholder="Enter old E-mail" onChange={(e) => setCemail(e.target.value)} />
+										<input type="text" name="username" placeholder="Enter New E-mail" onChange={(e) => setCemail(e.target.value)} />
 										<label>Email</label>
 										<i className="fa-solid fa-envelope"></i>
 									</div>
@@ -449,7 +429,7 @@ function Profile() {
 										<i className={iconClass.iname1} onClick={() => handleIconClick('input1', 'iname1')} id="eyeicon" style={{ cursor: 'pointer' }}></i>
 									</div>
 									<div className="profile-input-box-account b1">
-										<input type={inputTypes.input2} name="username" placeholder="Enter old Password" onChange={(e) => setCpass(e.target.value)} />
+										<input type={inputTypes.input2} name="username" placeholder="Enter New Password" onChange={(e) => setCpass(e.target.value)} />
 										<label>Password</label>
 
 										<i className={iconClass.iname2} onClick={() => handleIconClick('input2', 'iname2')} id="ceyeicon" style={{ cursor: 'pointer' }}></i>
@@ -534,7 +514,7 @@ function Profile() {
 							<form method="post" onSubmit={profilemailchange}>
 								<div className="profile-email-change">
 									<div className="profile-input-box-account b1">
-										<input type="text" name="username" placeholder="Enter old E-mail" onChange={(e) => setCemail(e.target.value)} />
+										<input type="text" name="username" placeholder="Enter E-mail" onChange={(e) => setCemail(e.target.value)} />
 										<label>Email</label>
 										<i className="fa-solid fa-envelope"></i>
 									</div>
