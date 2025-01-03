@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../utils/axiosConfig';
+import { useGlobalContext } from '../../context/GlobalProvider';
 
 import './User.css';
 import User2 from './user2';
 import Select from './select';
-// import axios from 'axios';
 
 const defaultCourses = [
 	{ id: 'c1', icon: 'ENG', title: 'ENGLISH' },
@@ -16,23 +16,24 @@ const defaultCourses = [
 ];
 
 const User = () => {
+	const { name, mail, pic, phoneNo, year, branch, semester, person, token } = useGlobalContext();
 	const navigate = useNavigate();
-	const check = async () => {
-		try {
-			const response = await axiosInstance.get('home');
-			// console.log(response.data);
-			if (response.data.message !== 'Success') {
-				navigate('/login');
-			}
-		} catch (error) {
-			console.error('Error fetching user data:', error);
-			navigate('/login');
-		}
-	};
+	// const check = async () => {
+	// 	try {
+	// 		const response = await axiosInstance.get('home');
+	// 		// console.log(response.data);
+	// 		if (response.data.message !== 'Success') {
+	// 			navigate('/login');
+	// 		}
+	// 	} catch (error) {
+	// 		console.error('Error fetching user data:', error);
+	// 		navigate('/login');
+	// 	}
+	// };
 
-	useEffect(() => {
-		check();
-	}, [navigate]);
+	// useEffect(() => {
+	// 	check();
+	// }, [navigate]);
 
 	const location = useLocation();
 	const data = location.state;

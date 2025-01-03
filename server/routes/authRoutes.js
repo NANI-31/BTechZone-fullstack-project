@@ -4,10 +4,11 @@ const router = express.Router();
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+// const upload = multer({ dest: 'uploads/' });
 
 const { signup, verifyEmail, login, home, profileChange } = require('../controllers/authController');
 // const { userSignupValidator, userLoginValidator } = require('../validators/authValidator');
-// const { userAuthMiddleware } = require('../middlewares/userAuthMiddlewares');
+const { userAuthMiddleware } = require('../middlewares/userAuthMiddlewares');
 // const { registerUser } = require('../controllers/registerUser');
 // const { checkEmail } = require('../controllers/checkEmail');
 // const { checkPassword } = require('../controllers/checkPassword');
@@ -18,8 +19,8 @@ const { signup, verifyEmail, login, home, profileChange } = require('../controll
 router.post('/signup', signup);
 router.post('/verifyEmail', verifyEmail);
 router.post('/login', login);
-// router.get('/home', userAuthMiddleware, home);
-router.get('/home', home);
+router.get('/home', userAuthMiddleware, home);
+// router.get('/home', home);
 router.post('/profileChange', upload.single('image'), profileChange);
 
 // router.post('/register', registerUser);

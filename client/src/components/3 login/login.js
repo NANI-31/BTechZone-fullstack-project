@@ -1,21 +1,26 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './login.css';
-import { axiosInstance, axiosConfig } from '../utils/axiosConfig';
+import { axiosInstance } from '../utils/axiosConfig';
 import useSetCookie from '../actions/setCookie';
 import { setUser } from '../redux/slices/states/userSlice';
 import { useDispatch } from 'react-redux';
+import { useGlobalContext } from '../../context/GlobalProvider';
+// import { set } from 'mongoose';
 
 // import './components/3 login/login.css';
 
 function Login() {
 	const dispatch = useDispatch();
+	const { setName, setMail, setPic, setPhoneNo, setYear, setBranch, setSemester, setPerson, setToken } = useGlobalContext();
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
 	const [modalOpene, setModalOpene] = useState(false);
 	const [modalOpenp, setModalOpenp] = useState(false);
 	const { setCustomeCookie } = useSetCookie();
 	const navigate = useNavigate();
+	const location = useLocation();
+	const from = location.state?.from?.pathname || '/';
 	const [inputTypes, setInputTypes] = useState({
 		input1: 'password',
 	});
@@ -38,14 +43,25 @@ function Login() {
 		e.preventDefault();
 		try {
 			const response = await axiosInstance.post('login', { email, password });
-			// console.log(response.data);
+			console.log(response.data);
 			if (response.data === 'Incorrect password') {
 				openModalp();
 			} else if (response.data === 'User not registered') {
 				openModale();
 			} else {
 				dispatch(setUser(response.data.responseData));
-				setCustomeCookie('userToken', response.data.token);
+				setName(response.data.responseData.name);
+				setMail(response.data.responseData.email);
+				setPic(response.data.responseData.pic);
+				setPhoneNo(response.data.responseData.phoneno);
+				// setYear(response.data.responseData.year);
+				setBranch(response.data.responseData.branch);
+				// setSemester(response.data.responseData.semester);
+				setPerson(response.data.responseData.person);
+				setToken(response.data.token);
+				console.log(response.data.responseData);
+				setCustomeCookie('userToken', response.token);
+				// navigate(from, { replace: true });
 				navigate('/user');
 			}
 		} catch (error) {

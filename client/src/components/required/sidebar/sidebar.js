@@ -3,12 +3,14 @@ import './sidebar.css';
 import { Link, useLocation } from 'react-router-dom';
 import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
+import { useGlobalContext } from '../../../context/GlobalProvider';
 
 // import aa from './aa.jpeg';
 import defaultPic from '../images/sidebar/user.png';
 
 // const socket = io.connect('http://localhost:5000');
 function Sidebar() {
+	const { name, pic, email, phoneNo, year, branch, semester, person, token } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
 	const location = useLocation();
 	// const [profilePhoto, setProfilePhoto] = useState(null);
@@ -83,8 +85,12 @@ function Sidebar() {
 		<div className="sidebar-container">
 			<div className="sidebar">
 				<div className="sidebar-logo">
-					<img src={userData?.pic || defaultPic} alt="logo" />
-					<h2 className="sidebar-user-name">{userData?.name || 'user'}</h2>
+					{/* <div className="sidebar-logo1"> */}
+					{/* <div className="sidebar-image"> */}
+					<img src={pic || defaultPic} alt="logo" />
+					{/* </div> */}
+					<h2 className="sidebar-user-name">{name || 'user'}</h2>
+					{/* </div> */}
 				</div>
 				<ul className="sidebar-links links1">
 					<li className={isActive('/user')}>

@@ -6,6 +6,8 @@ import pic from './a.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/states/userSlice';
 import { axiosInstance } from '../../utils/axiosConfig';
+import { useGlobalContext } from '../../../context/GlobalProvider';
+
 const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggleDropdown, icon }) => {
 	const handleOptionClick = (option) => {
 		onSelect(option);
@@ -32,6 +34,7 @@ const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggl
 };
 
 function Profile() {
+	const { name, mail, pic, setPic, phoneNo, year, branch, semester, person, token, setName } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
 	const dispatch = useDispatch();
 	const [selectedPhone, setSelectedPhone] = useState(null);
@@ -103,7 +106,8 @@ function Profile() {
 		setActiveTab(tabName);
 	};
 
-	const imageSrc = userData?.pic;
+	const imageSrc = pic;
+	console.log(imageSrc);
 	// setImageSrc(userData?.pic);
 	const profilemailchange = async (e) => {
 		e.preventDefault();
@@ -208,9 +212,9 @@ function Profile() {
 		formData.append('semester', selectedSemester);
 		formData.append('branch', selectedBranch);
 		formData.append('image', imageFile);
-		formData.append('email', userData.email);
-		formData.append('person', userData.person);
-		console.log(userData.email);
+		formData.append('email', mail);
+		formData.append('person', person);
+		console.log(person, mail);
 		try {
 			const response = await axiosInstance.post('/profileChange', formData, {
 				headers: { 'Content-Type': 'multipart/form-data' },
@@ -218,6 +222,8 @@ function Profile() {
 			if (response.data.status === 'success') {
 				console.log('success');
 				dispatch(setUser(response.data.responseData));
+				setName(response.data.responseData.name);
+				setPic(response.data.responseData.pic.pic_temporary);
 			} else {
 				console.log('fail');
 			}
@@ -255,17 +261,17 @@ function Profile() {
 						<div className="profile-col">
 							<div className="profile-col1">
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.name || ''} />
+									<input type="text" name="username" readOnly value={name || ''} />
 									<label>Username</label>
 									<i className="fa-solid fa-user"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.email || ''} />
+									<input type="text" name="username" readOnly value={mail || ''} />
 									<label>E-mail</label>
 									<i className="fa-solid fa-envelope"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.phoneNo || ''} />
+									<input type="text" name="username" readOnly value={phoneNo || ''} />
 									<label>Phone</label>
 									<i className="fa-solid fa-phone"></i>
 								</div>
@@ -273,17 +279,17 @@ function Profile() {
 									{userData?.person === 'student' && (
 										<>
 											<div className="profile-input-box b1">
-												<input type="text" name="username" readOnly value={userData?.year || ''} />
+												<input type="text" name="username" readOnly value={year || ''} />
 												<label>Year</label>
 											</div>
 											<div className="profile-input-box b1">
-												<input type="text" name="username" readOnly value={userData?.sem || ''} />
+												<input type="text" name="username" readOnly value={semester || ''} />
 												<label>semester</label>
 											</div>
 										</>
 									)}
 									<div className="profile-input-box b1">
-										<input type="text" name="username" readOnly value={userData?.branch || ''} />
+										<input type="text" name="username" readOnly value={branch || ''} />
 										<label>branch</label>
 									</div>
 								</div>
@@ -303,18 +309,18 @@ function Profile() {
 						<div className="profile-col">
 							<div className="profile-col1">
 								<div className="profile-input-box-change b1">
-									<input type="text" name="username" placeholder={userData?.name || ''} onChange={(e) => setSelectedName(e.target.value)} />
+									<input type="text" name="username" placeholder={name || ''} onChange={(e) => setSelectedName(e.target.value)} />
 									<label>Username</label>
 									<i className="fa-solid fa-user"></i>
 								</div>
 								<div className="profile-input-box-change b1">
-									<input type="tel" name="username" placeholder={userData?.phoneNo || ''} onChange={(e) => setSelectedPhone(e.target.value)} />
+									<input type="tel" name="username" placeholder={phoneNo || ''} onChange={(e) => setSelectedPhone(e.target.value)} />
 									<label>Phone No</label>
 									<i className="fa-solid fa-phone"></i>
 								</div>
 								<div className="profile-row1">
 									<div className="profile-input-box-change cus b1">
-										{userData?.person === 'student' && (
+										{person === 'student' && (
 											<>
 												<CustomDropdown
 													label="Select Year"

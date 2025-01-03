@@ -1,12 +1,18 @@
 const { sendEmailVerification, otpStore } = require('../utils/sendEmail');
 const teachersdetails = require('../schemas/teachers/teachersDetails');
 const studentsdetails = require('../schemas/students/studentsDetails');
+const { uploadImageToS3, getImageFromS3 } = require('../utils/uplod');
+const poppler = require('pdf-poppler');
+const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
+const mime = require('mime-types');
+
+require('dotenv').config();
 
 const bycrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie-parser');
 const path = require('path');
-require('dotenv').config();
 
 const details = {};
 
@@ -32,8 +38,7 @@ exports.signup = async (req, res) => {
 exports.verifyEmail = async (req, res) => {
 	const { otpcode, email } = req.body;
 	const storedOtp = otpStore[email];
-	console.log(otpcode, email, 'body');
-	console.log(otpcode, storedOtp, 'diff');
+	const user_id = uuidv4();
 	try {
 		if (storedOtp == otpcode) {
 			const { name, hashedPassword, phoneno, branch, person } = details[email];
@@ -44,6 +49,7 @@ exports.verifyEmail = async (req, res) => {
 
 			const teacher = new teachersdetails({
 				id: newUserId,
+				user_id: user_id,
 				name: name,
 				email: email,
 				password: hashedPassword,
@@ -122,10 +128,12 @@ exports.login = async (req, res) => {
 			maxAge: 3600000, // 1 hour
 		});
 		let imageData = '';
-		if (user.pic && user.contentType) {
-			const base64Data = user.pic.toString('base64');
-			const contentType = user.contentType;
-			imageData = `data:${contentType};base64,${base64Data}`;
+		if (user.pic.pic_url && user.contentType) {
+			// const base64Data = user.pic.toString('base64');
+			// const contentType = user.contentType;
+			// imageData = `data:${contentType};base64,${base64Data}`;
+			imageData = await getImageFromS3(user.pic.pic_name, user);
+			console.log(imageData);
 		}
 		const responseData = {
 			name: user.name,
@@ -135,7 +143,6 @@ exports.login = async (req, res) => {
 			person: user.person,
 			pic: imageData,
 		};
-		console.log(responseData);
 		res.status(200).json({ message: 'Login successful', token, responseData });
 	} catch (err) {
 		console.log(err);
@@ -145,13 +152,65 @@ exports.login = async (req, res) => {
 
 exports.profileChange = async (req, res) => {
 	const imgBuffer = req.file?.buffer;
-	const imgg = req.file?.mimetype;
+	const imgMime = req.file?.mimetype;
 	const { name, phoneno, branch, email, person } = req.body;
+	// ============================================
+	// const filePath = req.file.path;
+	// const outputDir = 'output_images';
+	// if (!fs.existsSync(outputDir)) {
+	// 	fs.mkdirSync(outputDir);
+	// }
+	// const outputFilePath = path.join(outputDir, `${req.file.filename}.jpg`);
+	// const options = {
+	// 	format: 'jpeg',
+	// 	out_dir: outputDir,
+	// 	out_prefix: req.file.filename,
+	// 	page: 1,
+	// };
+	// await poppler.convert(filePath, options);
+	// const imageBuffer = fs.readFileSync(outputFilePath);
 
+	// ============================================conversion of pdf to image
+	// const tempFilePath = path.join(__dirname, 'uploads', `${Date.now()}-temp.pdf`);
+	// fs.writeFileSync(tempFilePath, req.file.buffer);
+
+	// // Ensure output directory exists
+	// const outputDir = path.join(__dirname, 'output_images');
+	// if (!fs.existsSync(outputDir)) {
+	// 	fs.mkdirSync(outputDir);
+	// }
+
+	// const options = {
+	// 	format: 'jpeg',
+	// 	out_dir: outputDir,
+	// 	out_prefix: `output-${Date.now()}`,
+	// 	page: 1,
+	// };
+
+	// // Convert the first page of the PDF to an image
+	// await poppler.convert(tempFilePath, options);
+
+	// const outputFilePath = path.join(outputDir, `${options.out_prefix}-1.jpg`);
+	// const mimee = mime.lookup(outputFilePath);
+	// console.log(mimee);
+	// const imageBuffer = fs.readFileSync(outputFilePath);
+
+	// ============================================ end of conversion of pdf to image
+	// const url = await S3Client.getSignedUrl('putObject', params);
+
+	// s3.upload(params, (err, data) => {
+	// 	if (err) {
+	// 		console.log(err);
+	// 	} else {
+	// 		console.log(data);
+	// 	}
+	// });
+	console.log(imgMime);
 	const model = person === 'teacher' ? teachersdetails : studentsdetails;
 
 	try {
-		console.log(email);
+		let imageUrl = '';
+		// console.log(email);
 		const existingUser = await model.findOne({ email });
 
 		if (!existingUser) {
@@ -161,37 +220,38 @@ exports.profileChange = async (req, res) => {
 		// Check if name and phone number already exist
 		const existingName = await model.findOne({ name });
 
-		// Update fields if they are present
-		if (imgBuffer && imgg) {
-			existingUser.pic = imgBuffer;
-			existingUser.contentType = imgg;
+		if (imgBuffer && imgMime) {
+			// existingUser.pic = imgBuffer;
+			// existingUser.contentType = imgMime;
+			// console.log(mimee);
+			imageUrl = await uploadImageToS3(imgBuffer, imgMime, req.file.originalname, existingUser);
+			const imageTempUrl = await getImageFromS3(req.file.originalname, existingUser);
+			existingUser.contentType = imgMime;
+			existingUser.pic = {
+				pic_url: imageUrl,
+				pic_name: req.file.originalname,
+				pic_temporary: imageTempUrl,
+			};
+			// console.log(imageUrl);
 		}
+		// fs.unlinkSync(tempFilePath);
+		// fs.unlinkSync(outputFilePath);
 
 		// if (phoneno) existingUser.phoneno = phoneno;
 		if (branch) existingUser.branch = branch;
+		if (name) existingUser.name = name;
 
-		// Save updated user data
 		await existingUser.save();
 
 		let message = 'Profile updated successfully';
 		if (existingName) message += ' but not name because it already exists';
-
-		console.log(imgg);
-		console.log(existingUser.name);
-		let imageData = '';
-		if (existingUser.pic && existingUser.contentType) {
-			const base64Data = existingUser.pic.toString('base64');
-			const contentType = existingUser.contentType;
-			imageData = `data:${contentType};base64,${base64Data}`;
-		}
-		const responseData = {
-			name: existingUser.name,
-			email: existingUser.email,
-			phoneno: existingUser.phoneno,
-			branch: existingUser.branch,
-			person: existingUser.person,
-			pic: imageData,
-		};
+		// let imageData = '';
+		// if (existingUser.pic && existingUser.contentType) {
+		// 	const base64Data = existingUser.pic.toString('base64');
+		// 	const contentType = existingUser.contentType;
+		// 	imageData = `data:${contentType};base64,${base64Data}`;
+		// }
+		const responseData = existingUser;
 
 		res.send({ message, status: 'success', responseData });
 	} catch (err) {
