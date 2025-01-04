@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './sidebar.css';
 import { Link, useLocation } from 'react-router-dom';
-import io from 'socket.io-client';
+// import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
-import { useGlobalContext } from '../../../context/GlobalProvider';
+// import { useGlobalContext } from '../../../context/GlobalProvider';
+import { axiosInstance } from '../../utils/axiosConfig';
 
 // import aa from './aa.jpeg';
 import defaultPic from '../images/sidebar/user.png';
 
 // const socket = io.connect('http://localhost:5000');
 function Sidebar() {
-	const { name, pic, email, phoneNo, year, branch, semester, person, token } = useGlobalContext();
+	// const { name, pic, email, phoneNo, year, branch, semester, person, token } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
+	console.log(userData);
 	const location = useLocation();
 	// const [profilePhoto, setProfilePhoto] = useState(null);
 	const [labels, setLabels] = useState({
@@ -22,6 +24,10 @@ function Sidebar() {
 	});
 
 	useEffect(() => {
+		// const response = axiosInstance.get('user-details', { headers: { Authorization: `Bearer ${token}` } });
+		// response.then((response) => {
+		// 	console.log(response.data);
+		// });
 		const handleResize = () => {
 			if (window.innerWidth <= 950) {
 				setLabels({
@@ -59,37 +65,22 @@ function Sidebar() {
 		}
 	};
 
-	const [user, setUser] = useState(null);
-	// const [profilePhoto, setProfilePhoto] = useState(null);
-
-	useEffect(() => {
-		const storedUser = sessionStorage.getItem('userdata');
-
-		if (storedUser) {
-			setUser((prevUser) => {
-				const newUser = JSON.parse(storedUser);
-				// setProfilePhoto(newUser.img);
-				return newUser;
-			});
-		}
-
-		// socket.on('updateProfilePhoto', (data) => {
-		//     alert("ok");
-		//     setProfilePhoto(data.img);
-		// });
-		// return () => {
-		//     socket.off('updateProfilePhoto');
-		// };
-	}, []);
+	// socket.on('updateProfilePhoto', (data) => {
+	//     alert("ok");
+	//     setProfilePhoto(data.img);
+	// });
+	// return () => {
+	//     socket.off('updateProfilePhoto');
+	// };
 	return (
 		<div className="sidebar-container">
 			<div className="sidebar">
 				<div className="sidebar-logo">
 					{/* <div className="sidebar-logo1"> */}
 					{/* <div className="sidebar-image"> */}
-					<img src={pic || defaultPic} alt="logo" />
+					<img src={userData?.pic || defaultPic} alt="logo" />
 					{/* </div> */}
-					<h2 className="sidebar-user-name">{name || 'user'}</h2>
+					<h2 className="sidebar-user-name">{userData?.name || 'user'}</h2>
 					{/* </div> */}
 				</div>
 				<ul className="sidebar-links links1">
@@ -172,13 +163,8 @@ function Sidebar() {
 
 					<hr />
 
-					<li
-						className="logout-link block"
-						onClick={() => {
-							localStorage.clear();
-						}}
-					>
-						<Link to="/login" className="sidebar-a">
+					<li>
+						<Link to="/logout" className="sidebar-a">
 							<span>
 								<i className="fa-solid fa-arrow-right-from-bracket sidebari"></i>
 							</span>

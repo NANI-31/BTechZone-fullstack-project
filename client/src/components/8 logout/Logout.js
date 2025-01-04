@@ -1,24 +1,23 @@
-import { useGlobalContext } from '../../context/GlobalContext';
 import useRemoveCookie from '../actions/removeCookie';
-import { Link, Navigate, useLocation } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useLocation } from 'react-router-dom';
+import { axiosInstance } from '../utils/axiosConfig';
+import { useEffect } from 'react';
+
 const Logout = () => {
 	const location = useLocation();
-	const { setId, setName, setMail, setPic, setPhoneNo, setYear, setBranch, setSemester, setPerson, setToken } = useGlobalContext();
-	setId('');
-	setName('');
-	setMail('');
-	setPic('');
-	setPhoneNo('');
-	setYear('');
-	setBranch('');
-	setSemester('');
-	setPerson('');
-	setToken('');
-	localStorage.removeItem('userToken');
+	const navigate = useNavigate();
+	const from = location.state?.from?.pathname || '/login';
 	const { removeCustomeCookie } = useRemoveCookie();
-	removeCustomeCookie('userToken');
-	// navigate('login', { state: { from: location } });
-	return <Navigate to="/login" state={{ from: location }} replace />;
+	useEffect(() => {
+		localStorage.removeItem('userToken');
+		removeCustomeCookie('token');
+		axiosInstance.post('logout').then((response) => {
+			console.log(response.data);
+		});
+
+		navigate(from, { replace: true });
+	}, []);
+	// return <Navigate to="/login" state={{ from: location.pathname }} replace />;
 };
 
 export default Logout;

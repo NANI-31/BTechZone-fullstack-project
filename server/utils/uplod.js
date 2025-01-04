@@ -46,6 +46,8 @@ exports.uploadImageToS3 = async (buffer, mimetype, fileName, user) => {
 		const listResponse = await s3Client.send(listCommand);
 
 		// Check if a file exists and delete it
+		console.log('listResponse', listResponse.Contents);
+		console.log('deleting existing file');
 		if (listResponse.Contents && listResponse.Contents.length > 0) {
 			const existingFileKey = listResponse.Contents[0].Key; // There should only be one file
 			const deleteCommand = new DeleteObjectCommand({
@@ -53,7 +55,8 @@ exports.uploadImageToS3 = async (buffer, mimetype, fileName, user) => {
 				Key: existingFileKey,
 			});
 			await s3Client.send(deleteCommand);
-			console.log(`Deleted existing file: ${existingFileKey}`);
+			// console.log(`Deleted existing file: ${existingFileKey}`);
+			console.log(`Deleted existing file: `);
 		}
 
 		const filePath = `${folderPath}/${fileName}`;
@@ -86,7 +89,8 @@ exports.getImageFromS3 = async (key, user) => {
 			Key: fileKey,
 		});
 		const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-		console.log('Image retrieved from S3:', url);
+		console.log('Image retrieved from S3:');
+		// console.log('Image retrieved from S3:', url);
 		return url;
 	} catch (error) {
 		console.error('Error getting image from S3:', error);

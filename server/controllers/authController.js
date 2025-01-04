@@ -15,6 +15,7 @@ const cookie = require('cookie-parser');
 const path = require('path');
 
 const details = {};
+const userDetails = {};
 
 exports.signup = async (req, res) => {
 	const { name, email, password, phoneno, branch, person } = req.body;
@@ -123,7 +124,7 @@ exports.login = async (req, res) => {
 			httpOnly: true,
 			path: '/',
 			//   secure: process.env.NODE_ENV === 'production',
-			secure: true,
+			secure: false,
 			sameSite: 'Strict',
 			maxAge: 3600000, // 1 hour
 		});
@@ -141,8 +142,12 @@ exports.login = async (req, res) => {
 			phoneno: user.phoneno,
 			branch: user.branch,
 			person: user.person,
-			pic: imageData,
+			pic: {
+				pic_temporary: imageData,
+			},
 		};
+		userDetails[token] = responseData;
+		// console.log('login: ', userDetails[token]);
 		res.status(200).json({ message: 'Login successful', token, responseData });
 	} catch (err) {
 		console.log(err);
@@ -205,12 +210,12 @@ exports.profileChange = async (req, res) => {
 	// 		console.log(data);
 	// 	}
 	// });
-	console.log(imgMime);
+	// console.log(imgMime);
 	const model = person === 'teacher' ? teachersdetails : studentsdetails;
 
+	console.log('email of the user: ', email);
 	try {
 		let imageUrl = '';
-		// console.log(email);
 		const existingUser = await model.findOne({ email });
 
 		if (!existingUser) {
@@ -223,7 +228,7 @@ exports.profileChange = async (req, res) => {
 		if (imgBuffer && imgMime) {
 			// existingUser.pic = imgBuffer;
 			// existingUser.contentType = imgMime;
-			// console.log(mimee);
+			console.log('uploading and getting image');
 			imageUrl = await uploadImageToS3(imgBuffer, imgMime, req.file.originalname, existingUser);
 			const imageTempUrl = await getImageFromS3(req.file.originalname, existingUser);
 			existingUser.contentType = imgMime;
@@ -232,7 +237,7 @@ exports.profileChange = async (req, res) => {
 				pic_name: req.file.originalname,
 				pic_temporary: imageTempUrl,
 			};
-			// console.log(imageUrl);
+			console.log('completed uploading and getting image');
 		}
 		// fs.unlinkSync(tempFilePath);
 		// fs.unlinkSync(outputFilePath);
@@ -260,14 +265,14 @@ exports.profileChange = async (req, res) => {
 	}
 };
 
-// exports.logout = async (req, res) => {
-//     try {
-//         res.clearCookie("userToken")
-//         res.json({ message: "Logout successful" });
-//     } catch (error) {
-//         res.status(400).json({ message: "Logout failed" });
-//     }
-// }
+exports.logout = async (req, res) => {
+	try {
+		res.clearCookie('userToken');
+		res.json({ message: 'Logout successful' });
+	} catch (error) {
+		res.status(400).json({ message: 'Logout failed' });
+	}
+};
 
 // exports.forgotPassword = async (req, res) => {
 //     try {

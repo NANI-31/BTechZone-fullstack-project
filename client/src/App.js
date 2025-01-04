@@ -28,7 +28,7 @@ import Chatting from './components/7 chatting/Chatting';
 import Testing from './components/5 user/testing';
 import PrivateRouting from './components/PrivateRoute';
 
-import Logout from './components/redux/slices/states/userSlice';
+import Logout from './components/8 logout/Logout';
 
 function App() {
 	return (

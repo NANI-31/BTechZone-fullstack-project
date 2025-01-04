@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { axiosInstance } from '../utils/axiosConfig';
-import { useGlobalContext } from '../../context/GlobalProvider';
+// import { useGlobalContext } from '../../context/GlobalProvider';
 
 import './User.css';
 import User2 from './user2';
@@ -16,7 +16,7 @@ const defaultCourses = [
 ];
 
 const User = () => {
-	const { name, mail, pic, phoneNo, year, branch, semester, person, token } = useGlobalContext();
+	// const { name, mail, pic, phoneNo, year, branch, semester, person, token } = useGlobalContext();
 	const navigate = useNavigate();
 	// const check = async () => {
 	// 	try {

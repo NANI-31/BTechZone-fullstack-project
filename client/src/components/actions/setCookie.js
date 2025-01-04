@@ -1,18 +1,18 @@
-import {useCookies} from 'react-cookie';
+import { useCookies } from 'react-cookie';
 const useSetCookie = () => {
-    const [cookies, setCookie] = useCookies();
-    
-    const setCustomeCookie = (name, value) => {
-        setCookie(name, value, { 
-            path: '/', 
-            httpOnly: true, 
-            secure: true, 
-            sameSite: 'strict',
-            maxAge: 60 * 60 * 24
-        });
-    }
+	const [cookies, setCookie] = useCookies();
 
-    return {setCustomeCookie};
-}
+	const setCustomeCookie = (name, value) => {
+		setCookie(name, value, {
+			path: '/',
+			httpOnly: true,
+			secure: false,
+			sameSite: 'strict',
+			maxAge: 60 * 60 * 24,
+		});
+	};
 
-export default useSetCookie
+	return { setCustomeCookie };
+};
+
+export default useSetCookie;
