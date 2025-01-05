@@ -13,6 +13,7 @@ const TeachersSchema = new mongoose.Schema({
 	phoneno: Number,
 	branch: String,
 	person: String,
+	refreshToken: [String],
 	pic: {
 		pic_url: String,
 		pic_name: String,
