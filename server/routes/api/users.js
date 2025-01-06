@@ -6,20 +6,9 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 // const upload = multer({ dest: 'uploads/' });
 
-const { signup, verifyEmail } = require('../controllers/registerController');
-const { home, profileChange } = require('../controllers/authController');
-const { userAuthMiddleware } = require('../middlewares/userAuthMiddlewares');
-const { logout } = require('../controllers/logoutController');
+const { profileChange } = require('../../controllers/authController');
 
-router.post('/signup', signup);
-router.post('/verifyEmail', verifyEmail);
-
-router.get('/home', userAuthMiddleware, home);
-
-router.post('/profileChange', upload.single('image'), profileChange);
-
-router.post('/logout', logout);
-// router.get('/home', home);
+router.post('/', upload.single('image'), profileChange);
 
 // const { userSignupValidator, userLoginValidator } = require('../validators/authValidator');
 // const { registerUser } = require('../controllers/registerUser');

@@ -51,9 +51,10 @@ exports.refreshToken = async (req, res) => {
 				}
 			);
 			const newRefreshToken = jwt.sign({ username: user.name }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+			// Saving refreshToken with current user
 			user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
 			const result = await user.save();
-
+			// Creates Secure Cookie with refresh token
 			res.cookie('jwt', newRefreshToken, {
 				httpOnly: true,
 				secure: true,
@@ -63,18 +64,6 @@ exports.refreshToken = async (req, res) => {
 			console.log(result);
 			res.json({ person, accessToken });
 		});
-
-		user.refreshToken = newRefreshTokenArray;
-		const result = await user.save();
-		const accessToken = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '1h' });
-		res.cookie('userToken', accessToken, {
-			httpOnly: true,
-			secure: true,
-			sameSite: 'None',
-			maxAge: 3600000, // 1 hour
-		});
-
-		res.status(200).json({ accessToken });
 	} catch (error) {
 		console.error(error);
 		res.status(500).json({ message: 'Internal server error' });

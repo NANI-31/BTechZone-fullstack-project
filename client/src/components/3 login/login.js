@@ -44,14 +44,15 @@ function Login() {
 		e.preventDefault();
 		try {
 			const response = await axiosInstance.post('login', { email, password });
-			// console.log(response.data);
+			console.log(response.data);
 			if (response.data === 'Incorrect password') {
 				openModalp();
 			} else if (response.data === 'User not registered') {
 				openModale();
 			} else {
-				dispatch(setUser(response.data.responseData));
-				dispatch(setToken(response.data.token));
+				const { responseData, accessToken } = response.data;
+				dispatch(setUser({ ...responseData, accessToken }));
+				dispatch(setToken(response.data.accessToken));
 				// setName(response.data.responseData.name);
 				// setMail(response.data.responseData.email);
 				// setPic(response.data.responseData.pic);
@@ -61,7 +62,7 @@ function Login() {
 				// setToken(response.data.token);
 				// console.log('response.data: ', response.data);
 				// console.log('response.data.responseData: ', response.data.responseData);
-				localStorage.setItem('userToken', response.data.token);
+				localStorage.setItem('userToken', response.data.accessToken);
 				// setCustomeCookie('token', response.token);
 				// console.log('response.data.token: ', response.data.token);
 				// navigate(from, { replace: true });

@@ -1,8 +1,11 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
-// import { useGlobalContext } from '../context/GlobalProvider';
 const PrivateRouting = () => {
 	const token = localStorage.getItem('userToken');
+	console.log(token);
 	const location = useLocation();
+	if (location.pathname === '/logout') {
+		return <Outlet />;
+	}
 	return token ? <Outlet /> : <Navigate to="/login" state={{ from: location }} replace />;
 };
 

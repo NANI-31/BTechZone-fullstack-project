@@ -30,10 +30,10 @@ const userSlice = createSlice({
 			state.branch = action.payload.branch;
 			state.semester = action.payload.semester;
 			state.person = action.payload.person;
-			// state.token = action.payload.token;
+			state.accessToken = action.payload;
 		},
 		setToken: (state, action) => {
-			state.token = action.payload;
+			state.accessToken = action.payload;
 		},
 
 		setOnlineUser: (state, action) => {
@@ -57,10 +57,16 @@ const userSlice = createSlice({
 			state.token = '';
 			state.socketConnection = null;
 		},
+		clearUser() {
+			return initaialState;
+		},
+		// clearUser: () => {
+		// 	initaialState;
+		// },
 	},
 });
 
-export const { setUser, setToken, setOnlineUser, setSocketConnection, login, logout } = userSlice.actions;
+export const { setUser, setToken, setOnlineUser, setSocketConnection, login, logout, clearUser } = userSlice.actions;
 export default userSlice.reducer;
 
 // export function useUser() {

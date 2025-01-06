@@ -21,7 +21,7 @@ exports.login = async (req, res) => {
 		const teacher = await teachersdetails.findOne({ email });
 		const student = await studentsdetails.findOne({ email });
 
-		let user = teacher ? teacher : student;
+		const user = teacher ? teacher : student;
 		if (!user) {
 			console.log('user not found and user not registered');
 			return res.status(400).json({ message: 'User not registered' });
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
                 3) If 1 & 2, reuse detection is needed to clear all RTs when user logs in
             */
 			const refreshToken = cookies.jwt;
-			const foundToken = await user.findOne({ refreshToken });
+			const foundToken = user.person === 'student' ? await studentsdetails.findOne({ refreshToken }) : await teachersdetails.findOne({ refreshToken });
 
 			// Detected refresh token reuse!
 			if (!foundToken) {
@@ -67,7 +67,7 @@ exports.login = async (req, res) => {
 			res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
 		}
 		// Saving refreshToken with current user
-		foundUser.refreshToken = [...newRefreshTokenArray, newRefreshToken];
+		user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
 		const result = await user.save();
 		console.log(result);
 

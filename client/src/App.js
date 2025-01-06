@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import Home from './components/1 home/home';
 import Signupselect from './components/2 signup/selectsignup';
 
@@ -27,23 +27,34 @@ import Pverification from './components/5 user/profile/pverification';
 import Chatting from './components/7 chatting/Chatting';
 import Testing from './components/5 user/testing';
 import PrivateRouting from './components/PrivateRoute';
-
+import PublicRouting from './components/PublicRoute';
 import Logout from './components/8 logout/Logout';
 
 function App() {
+	const isjwt = localStorage.getItem('userToken');
 	return (
 		<BrowserRouter>
 			<Routes>
-				<Route path="/" element={<Home />}></Route>
-				<Route path="/select-signup" element={<Signupselect />}></Route>
-				<Route path="/student-signup" element={<Studentsignup />}></Route>
-				<Route path="/teacher-signup" element={<Teachersignup />}></Route>
-
+				{/* <Route path="/" element={<Home />}></Route> */}
+				{/* <Route element={<PublicRouting isjwt={isjwt} />}> */}
+				<Route path="/" element={<Login />}></Route>
 				<Route path="/login" element={<Login />}></Route>
 				<Route path="/verification" element={<Sverification />}></Route>
 				<Route path="/tverification" element={<Tverification />}></Route>
+				{/* </Route> */}
+
+				{/* {isjwt && <Route path="/logout" element={<Logout />}></Route>} */}
+				<Route path="/logout" element={<Logout />}></Route>
 
 				<Route element={<PrivateRouting />}>
+					<Route path="/select-signup" element={<Navigate to="/" />} />
+					<Route path="/student-signup" element={<Navigate to="/" />} />
+					<Route path="/teacher-signup" element={<Navigate to="/" />} />
+					<Route path="/login" element={<Navigate to="/" />} />
+					<Route path="/verification" element={<Navigate to="/" />} />
+					<Route path="/tverification" element={<Navigate to="/" />} />
+					<Route path="/" element={<Navigate to="/user" />} />
+
 					<Route path="/user" element={<UserWithSidebar />} />
 					<Route path="/userupload" element={<UserUploadWithSidebar />} />
 					<Route path="/mylibrary" element={<LibraryWithSidebar />} />
@@ -55,7 +66,7 @@ function App() {
 					<Route path="/profile" element={<UserProfileWithSidebar />} />
 					<Route path="/pverification" element={<Pverification />}></Route>
 					<Route path="/chatting" element={<ChattingWithSidebar />}></Route>
-					<Route path="/logout" element={<Logout />}></Route>
+					{/* <Route path="/logout" element={<Logout />}></Route> */}
 				</Route>
 				{/* <Route path="/chatting" element={<Testing />}></Route> */}
 			</Routes>

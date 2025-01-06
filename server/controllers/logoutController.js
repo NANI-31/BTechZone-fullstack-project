@@ -38,7 +38,7 @@ exports.logout = async (req, res) => {
 	// user.refreshToken = '';
 	user.refreshToken = user.refreshToken.filter((rt) => rt !== refreshToken);
 	const result = await user.save();
-	console.log(result);
+	console.log('logout succsess');
 
 	res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
 	res.sendStatus(204);
