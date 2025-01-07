@@ -88,9 +88,9 @@ exports.getImageFromS3 = async (key, user) => {
 			Bucket: bucketName,
 			Key: fileKey,
 		});
-		const url = await getSignedUrl(s3Client, command, { expiresIn: 3600 });
-		console.log('Image retrieved from S3:');
-		// console.log('Image retrieved from S3:', url);
+		const url = await getSignedUrl(s3Client, command, { expiresIn: 36000 });
+		// console.log('Image retrieved from S3:');
+		console.log('Image retrieved from S3:', url);
 		return url;
 	} catch (error) {
 		console.error('Error getting image from S3:', error);

@@ -9,6 +9,12 @@ const jwt = require('jsonwebtoken');
 const userDetails = {};
 
 exports.login = async (req, res) => {
+	// const dd = 'f';
+	// res.cookie('jwt', dd, {
+	// 	httpOnly: true,
+	// 	maxAge: 24 * 60 * 60 * 1000,
+	// });
+	// return res.json({ message: 'Login successful' });
 	const cookies = req.cookies;
 	console.log(`cookie available at login: ${JSON.stringify(cookies)}`);
 	const { email, password } = req.body;
@@ -40,10 +46,11 @@ exports.login = async (req, res) => {
 					roles: user.person,
 				},
 			},
-			process.env.JWT_SECRET_KEY,
-			{ expiresIn: '6h' }
+			process.env.JWT_ACCESS_TOKEN_SECRET_KEY,
+			{ expiresIn: '10h' }
 		);
-		const newRefreshToken = jwt.sign({ username: user.name }, process.env.JWT_SECRET_KEY, { expiresIn: '24h' });
+		const newRefreshToken = jwt.sign({ username: user.name }, process.env.JWT_REFRESH_TOKEN_SECRET_KEY, { expiresIn: '1d' });
+		console.log('newRefreshToken', newRefreshToken);
 		// Changed to let keyword
 		let newRefreshTokenArray = !cookies?.jwt ? user.refreshToken : user.refreshToken.filter((rt) => rt !== cookies.jwt);
 
@@ -64,17 +71,18 @@ exports.login = async (req, res) => {
 				newRefreshTokenArray = [];
 			}
 
-			res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+			// res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
 		}
 		// Saving refreshToken with current user
 		user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
 		const result = await user.save();
-		console.log(result);
+		// console.log(result);
+		console.log('Tokens saved:', newRefreshToken);
 
 		// Set JWT in HttpOnly cookie
-		res.cookie('jwt', newRefreshToken, {
+		res.cookie('jwt', accessToken, {
 			httpOnly: true,
-			path: '/',
+			// path: '/',
 			//   secure: process.env.NODE_ENV === 'production',
 			secure: false,
 			sameSite: 'Strict',
@@ -86,7 +94,7 @@ exports.login = async (req, res) => {
 			// const contentType = user.contentType;
 			// imageData = `data:${contentType};base64,${base64Data}`;
 			imageData = await getImageFromS3(user.pic.pic_name, user);
-			console.log(imageData);
+			// console.log(imageData);
 		}
 		const responseData = {
 			name: user.name,
@@ -98,7 +106,7 @@ exports.login = async (req, res) => {
 				pic_temporary: imageData,
 			},
 		};
-		userDetails[accessToken] = responseData;
+		// userDetails[accessToken] = responseData;
 		// console.log('login: ', userDetails[accessToken]);
 		res.status(200).json({ message: 'Login successful', accessToken, responseData });
 	} catch (err) {

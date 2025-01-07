@@ -93,17 +93,18 @@ exports.profileChange = async (req, res) => {
 	// console.log(imgMime);
 	const model = person === 'teacher' ? teachersdetails : studentsdetails;
 
-	console.log('email of the user: ', email);
 	try {
 		let imageUrl = '';
 		const existingUser = await model.findOne({ email });
 
 		if (!existingUser) {
+			console.log('auth contoller email of the user: ', email);
 			return res.status(404).send({ message: 'User not found', status: 'error' });
 		}
 
 		// Check if name and phone number already exist
 		const existingName = await model.findOne({ name });
+		console.log(imgMime);
 
 		if (imgBuffer && imgMime) {
 			// existingUser.pic = imgBuffer;
@@ -137,7 +138,6 @@ exports.profileChange = async (req, res) => {
 		// 	imageData = `data:${contentType};base64,${base64Data}`;
 		// }
 		const responseData = existingUser;
-
 		res.send({ message, status: 'success', responseData });
 	} catch (err) {
 		console.error('profilechange-failed', err);

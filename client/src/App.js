@@ -30,7 +30,11 @@ import PrivateRouting from './components/PrivateRoute';
 import PublicRouting from './components/PublicRoute';
 import Logout from './components/8 logout/Logout';
 
+import { useSelector } from 'react-redux';
+import PersistanceLogin from './components/PersistanceLogin';
+
 function App() {
+	const user = useSelector((state) => state.user);
 	const isjwt = localStorage.getItem('userToken');
 	return (
 		<BrowserRouter>
@@ -45,28 +49,29 @@ function App() {
 
 				{/* {isjwt && <Route path="/logout" element={<Logout />}></Route>} */}
 				<Route path="/logout" element={<Logout />}></Route>
+				<Route element={<PersistanceLogin />}>
+					<Route element={<PrivateRouting />}>
+						<Route path="/select-signup" element={<Navigate to="/" />} />
+						<Route path="/student-signup" element={<Navigate to="/" />} />
+						<Route path="/teacher-signup" element={<Navigate to="/" />} />
+						<Route path="/login" element={<Navigate to="/" />} />
+						<Route path="/verification" element={<Navigate to="/" />} />
+						<Route path="/tverification" element={<Navigate to="/" />} />
+						<Route path="/" element={<Navigate to="/user" />} />
 
-				<Route element={<PrivateRouting />}>
-					<Route path="/select-signup" element={<Navigate to="/" />} />
-					<Route path="/student-signup" element={<Navigate to="/" />} />
-					<Route path="/teacher-signup" element={<Navigate to="/" />} />
-					<Route path="/login" element={<Navigate to="/" />} />
-					<Route path="/verification" element={<Navigate to="/" />} />
-					<Route path="/tverification" element={<Navigate to="/" />} />
-					<Route path="/" element={<Navigate to="/user" />} />
+						<Route path="/user" element={<UserWithSidebar />} />
+						<Route path="/userupload" element={<UserUploadWithSidebar />} />
+						<Route path="/mylibrary" element={<LibraryWithSidebar />} />
+						<Route path="/mybookmarks" element={<BookmarksWithSidebar />} />
+						<Route path="/publiclibrary" element={<PLibraryWithSidebar />} />
+						<Route path="/studentlibrary" element={<SLibraryWithSidebar />} />
+						<Route path="/teacherlibrary" element={<TLibraryWithSidebar />} />
 
-					<Route path="/user" element={<UserWithSidebar />} />
-					<Route path="/userupload" element={<UserUploadWithSidebar />} />
-					<Route path="/mylibrary" element={<LibraryWithSidebar />} />
-					<Route path="/mybookmarks" element={<BookmarksWithSidebar />} />
-					<Route path="/publiclibrary" element={<PLibraryWithSidebar />} />
-					<Route path="/studentlibrary" element={<SLibraryWithSidebar />} />
-					<Route path="/teacherlibrary" element={<TLibraryWithSidebar />} />
-
-					<Route path="/profile" element={<UserProfileWithSidebar />} />
-					<Route path="/pverification" element={<Pverification />}></Route>
-					<Route path="/chatting" element={<ChattingWithSidebar />}></Route>
-					{/* <Route path="/logout" element={<Logout />}></Route> */}
+						<Route path="/profile" element={<UserProfileWithSidebar />} />
+						<Route path="/pverification" element={<Pverification />}></Route>
+						<Route path="/chatting" element={<ChattingWithSidebar />}></Route>
+						{/* <Route path="/logout" element={<Logout />}></Route> */}
+					</Route>
 				</Route>
 				{/* <Route path="/chatting" element={<Testing />}></Route> */}
 			</Routes>

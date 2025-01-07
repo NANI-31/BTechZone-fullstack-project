@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './login.css';
-import { axiosInstance } from '../utils/axiosConfig';
+import axios from '../utils/axiosConfig';
 import useSetCookie from '../actions/setCookie';
 import useRemoveCookie from '../actions/removeCookie';
 import { setUser, setToken } from '../redux/slices/states/userSlice';
@@ -43,7 +43,14 @@ function Login() {
 	const handleloginsubmit = async (e) => {
 		e.preventDefault();
 		try {
-			const response = await axiosInstance.post('login', { email, password });
+			const response = await axios.post(
+				'login',
+				{ email, password },
+				{
+					headers: { 'Content-Type': 'application/json' },
+					withCredentials: true,
+				}
+			);
 			console.log(response.data);
 			if (response.data === 'Incorrect password') {
 				openModalp();
@@ -65,6 +72,7 @@ function Login() {
 				localStorage.setItem('userToken', response.data.accessToken);
 				// setCustomeCookie('token', response.token);
 				// console.log('response.data.token: ', response.data.token);
+				console.log(document.cookie);
 				// navigate(from, { replace: true });
 				navigate('/user');
 			}

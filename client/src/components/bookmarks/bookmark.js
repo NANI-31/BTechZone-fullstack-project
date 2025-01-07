@@ -1,29 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
+
 import './bookmark.css';
 function Bookmark() {
+	const userData = useSelector((state) => state.user);
 	const [activeTab, setActiveTab] = useState('student');
 
 	const handleTabChange = (tabName) => {
 		setActiveTab(tabName);
 	};
-	const [usery, setUsery] = useState(null);
 	const [pdfdata, setPdfdata] = useState(null);
 
 	useEffect(() => {
-		const storedUser = sessionStorage.getItem('userdata');
-		const newUser1 = JSON.parse(storedUser);
-		const person = newUser1.person;
-		const email = newUser1.email;
-		if (storedUser) {
-			setUsery((prevUser) => {
-				const newUser = JSON.parse(storedUser);
-				return newUser;
-			});
-		}
 		const fetchData1 = async () => {
 			try {
-				const response = await axios.post('http://localhost:5000/my-bookmarks', { person, email });
+				const response = await axios.post('http://localhost:5000/my-bookmarks', { person: userData.person, email: userData.email });
 				if (response.data === 'ok') {
 					console.log('ok');
 				}

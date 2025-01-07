@@ -14,7 +14,7 @@ mongoose
 // 	console.log('DATABASE connected');
 // });
 
-// db.on('error', (err) => {
+// db.on('error', (err) => {s
 // 	console.log('DATABASE connection error:', err);
 // });
 

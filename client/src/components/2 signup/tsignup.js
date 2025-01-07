@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './signup.css';
-import { axiosInstance } from '../utils/axiosConfig';
+import axios from '../utils/axiosConfig';
 // import { ToastContainer, toast } from 'react-toastify';
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -103,7 +103,7 @@ function TSignup() {
 		const person = 'teacher';
 		try {
 			console.log('teachet signup client: ', name, email, password, phoneno, branch);
-			const response = await axiosInstance.post('signup', { name, email, password, phoneno, branch, person });
+			const response = await axios.post('register/signup', { name, email, password, phoneno, branch, person });
 			console.log(response.data, 'signup clinet');
 			navigate('/tverification', { state: response.data });
 			// navigate('/tverification');

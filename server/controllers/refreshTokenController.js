@@ -1,21 +1,24 @@
 const teachersdetails = require('../schemas/teachers/teachersDetails');
 const studentsdetails = require('../schemas/students/studentsDetails');
-
+require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 exports.refreshToken = async (req, res) => {
 	try {
+		console.log('refresh token api called');
 		const cookies = req.cookies;
 		if (!cookies) {
+			console.log('No refresh token found');
 			return res.status(401).json({ message: 'No refresh token found' });
 		}
 
 		const refreshToken = cookies.jwt;
-		res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: true });
+		console.log('refreshToken from the cokkies: ', refreshToken);
+		res.clearCookie('jwt', { httpOnly: true, sameSite: 'None', secure: false });
 
 		const user = req.body.person === 'student' ? await studentsdetails.findOne({ refreshToken }) : await teachersdetails.findOne({ refreshToken });
 		if (!user) {
-			jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, async (err, decoded) => {
+			jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET_KEY, async (err, decoded) => {
 				if (err) {
 					return res.status(401).json({ message: 'Invalid refresh token' });
 				}
@@ -29,7 +32,7 @@ exports.refreshToken = async (req, res) => {
 		}
 		const newRefreshTokenArray = user.refreshToken.filter((rt) => rt !== refreshToken);
 
-		jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET_KEY, async (err, decoded) => {
+		jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET_KEY, async (err, decoded) => {
 			if (err) {
 				console.log('expired refresh token');
 				user.refreshToken = [...newRefreshTokenArray];
@@ -45,12 +48,12 @@ exports.refreshToken = async (req, res) => {
 						roles: decoded.roles,
 					},
 				},
-				process.env.JWT_SECRET_KEY,
+				process.env.JWT_ACCESS_TOKEN_SECRET_KEY,
 				{
-					expiresIn: '1h',
+					expiresIn: '10h',
 				}
 			);
-			const newRefreshToken = jwt.sign({ username: user.name }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '1d' });
+			const newRefreshToken = jwt.sign({ username: user.name }, process.env.JWT_REFRESH_TOKEN_SECRET_KEY, { expiresIn: '1d' });
 			// Saving refreshToken with current user
 			user.refreshToken = [...newRefreshTokenArray, newRefreshToken];
 			const result = await user.save();
@@ -61,7 +64,7 @@ exports.refreshToken = async (req, res) => {
 				sameSite: 'None',
 				maxAge: 24 * 60 * 60 * 1000,
 			});
-			console.log(result);
+			console.log('refresh token updated: ', result);
 			res.json({ person, accessToken });
 		});
 	} catch (error) {

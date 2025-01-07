@@ -6,6 +6,7 @@ import pic from './a.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/states/userSlice';
 import { axiosInstance } from '../../utils/axiosConfig';
+// import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 // import { useGlobalContext } from '../../../context/GlobalProvider';
 
 const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggleDropdown, icon }) => {
@@ -34,6 +35,7 @@ const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggl
 };
 
 function Profile() {
+	// const axiosPrivate = useAxiosPrivate();
 	// const { name, mail, pic, setPic, phoneNo, year, branch, semester, person, token, setName } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
 	const dispatch = useDispatch();
@@ -216,9 +218,7 @@ function Profile() {
 		formData.append('person', userData.person);
 		// console.log(person, mail);
 		try {
-			const response = await axiosInstance.post('/profileChange', formData, {
-				headers: { 'Content-Type': 'multipart/form-data' },
-			});
+			const response = await axiosInstance.post('/profileChange', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 			if (response.data.status === 'success') {
 				console.log('success');
 				dispatch(setUser(response.data.responseData));
