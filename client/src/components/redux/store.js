@@ -2,6 +2,7 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 // import { persistStore, persistReducer } from 'redux-persist';
 // import storage from 'redux-persist/lib/storage';
 import userReducer from './slices/states/userSlice';
+import documentReducer from './slices/states/documentsSlice';
 
 // Persist configuration
 // const persistConfig = {
@@ -32,6 +33,7 @@ const store = configureStore({
 	reducer: {
 		// user: rootReducer.userReducer,
 		user: userReducer,
+		document: documentReducer,
 	},
 });
 

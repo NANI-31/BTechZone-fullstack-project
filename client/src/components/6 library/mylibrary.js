@@ -59,7 +59,7 @@ function DraggableNavigationMenu() {
 		const email = userData.email;
 		const person = userData.person;
 		try {
-			const response = await axios.post('http://localhost:5000/userLibrary/mylib-get-recent', { email, person });
+			const response = await axiosInstance.get('http://localhost:5000/userLibrary/mylib-get-recent', { email, person });
 			const { pdfData } = response.data;
 			setPdfDataRecent(pdfData.rreferences);
 			console.log(pdfData.rreferences);

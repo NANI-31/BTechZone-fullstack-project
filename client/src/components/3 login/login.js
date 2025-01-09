@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import './login.css';
 import axios from '../utils/axiosConfig';
@@ -13,9 +13,17 @@ import { useGlobalContext } from '../../context/GlobalProvider';
 
 function Login() {
 	const dispatch = useDispatch();
+	const refe = useRef(null);
+	const refp = useRef(null);
+	useEffect(() => {
+		refe.current.focus();
+		refp.current.focus();
+		refe.current.value = 'a';
+		refp.current.value = 'a';
+	});
 	// const { setName, setMail, setPic, setPhoneNo, setYear, setBranch, setSemester, setPerson, setToken } = useGlobalContext();
-	const [email, setEmail] = useState();
-	const [password, setPassword] = useState();
+	const [email, setEmail] = useState('a');
+	const [password, setPassword] = useState('a');
 	const [modalOpene, setModalOpene] = useState(false);
 	const [modalOpenp, setModalOpenp] = useState(false);
 	const { setCustomeCookie } = useSetCookie();
@@ -51,15 +59,14 @@ function Login() {
 					withCredentials: true,
 				}
 			);
-			console.log(response.data);
+
 			if (response.data === 'Incorrect password') {
 				openModalp();
 			} else if (response.data === 'User not registered') {
 				openModale();
 			} else {
-				const { responseData, accessToken } = response.data;
-				dispatch(setUser({ ...responseData, accessToken }));
-				dispatch(setToken(response.data.accessToken));
+				dispatch(setUser(response.data.responseData));
+				// dispatch(setToken(accessToken));
 				// setName(response.data.responseData.name);
 				// setMail(response.data.responseData.email);
 				// setPic(response.data.responseData.pic);
@@ -72,7 +79,6 @@ function Login() {
 				localStorage.setItem('userToken', response.data.accessToken);
 				// setCustomeCookie('token', response.token);
 				// console.log('response.data.token: ', response.data.token);
-				console.log(document.cookie);
 				// navigate(from, { replace: true });
 				navigate('/user');
 			}
@@ -107,13 +113,13 @@ function Login() {
 						<h2 className="login-h2">LOGIN</h2>
 						<form method="post" onSubmit={handleloginsubmit}>
 							<div className="login-input-box">
-								<input type="email" required name="email" autoComplete="on" onChange={(e) => setEmail(e.target.value)} />
+								<input ref={refe} type="text" required name="email" autoComplete="on" onChange={(e) => setEmail(e.target.value)} />
 								<label>Email</label>
 								<i className="fa-solid fa-user"></i>
 							</div>
 
 							<div className="login-input-box">
-								<input type={inputTypes.input1} required id="log-in_password" name="password" autoComplete="off" onChange={(e) => setPassword(e.target.value)} />
+								<input ref={refp} type={inputTypes.input1} required id="log-in_password" name="password" autoComplete="off" onChange={(e) => setPassword(e.target.value)} />
 								<label>Password</label>
 								<i className={iconClass.iname1} onClick={() => handleIconClick('input1', 'iname1')} id="eyeicon" style={{ cursor: 'pointer' }}></i>
 							</div>

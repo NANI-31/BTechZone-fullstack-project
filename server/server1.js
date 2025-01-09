@@ -23,32 +23,17 @@ app.use('/login', require('./routes/authRoute'));
 app.use('/register', require('./routes/registerRoute'));
 app.use('/logout', require('./routes/logOutRoute'));
 app.use('/refreshToken', require('./routes/refreshTokenRoute'));
+app.use('/persistData', require('./routes/persistRoute'));
 
 // verify jwt
+app.use('/pdfUpload', require('./routes/api/documentUpload'));
+app.use('/getDocumentsImage', require('./routes/api/getDocumentsImage'));
 const verifyJWT = require('./middlewares/verifyJWT');
-// app.use(verifyJWT);
-app.use('/persistData/a', require('./routes/persistRoute'));
+app.use(verifyJWT);
 
 app.use('/profileChange', require('./routes/api/users'));
 
-app.get('/persistData', async (req, res) => {
-	try {
-		const token = req.cookies.jwt || '';
-		const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET_KEY);
-		const { username } = decoded.UserInfo;
-
-		const user = await teachersDetails.findOne({ name: username });
-		if (!user) {
-			console.log('user data not found');
-			return res.status(404).json({ message: 'User not found' });
-		}
-		// send the user data to the client
-		res.status(200).json(user);
-	} catch (error) {
-		console.error('persist error: ', error);
-		res.status(500).json({ message: 'Internal server error' });
-	}
-});
+app.use('/deleteAccount', require('./routes/accountDeleteRoute'));
 
 app.listen(process.env.PORT || 5000, () => {
 	console.log(`server is running on ${process.env.PORT}`);

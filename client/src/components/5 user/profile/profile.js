@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './profile.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import pic from './a.jpg';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../../redux/slices/states/userSlice';
 import { axiosInstance } from '../../utils/axiosConfig';
-// import useAxiosPrivate from '../../hooks/useAxiosPrivate';
+import useAxiosPrivate from '../../hooks/useAxiosPrivate';
 // import { useGlobalContext } from '../../../context/GlobalProvider';
 
 const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggleDropdown, icon }) => {
@@ -35,20 +37,25 @@ const CustomDropdown = ({ label, options, selectedValue, onSelect, isOpen, toggl
 };
 
 function Profile() {
-	// const axiosPrivate = useAxiosPrivate();
+	const axiosPrivate = useAxiosPrivate();
 	// const { name, mail, pic, setPic, phoneNo, year, branch, semester, person, token, setName } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
 	const dispatch = useDispatch();
+	const email = userData?.email;
+	const imageSrc = userData?.pic;
+	const person = userData?.person;
+
 	const [selectedPhone, setSelectedPhone] = useState(null);
 	const [selectedName, setSelectedName] = useState('');
 	const [selectedYear, setSelectedYear] = useState('Select Year');
 	const [selectedSemester, setSelectedSemester] = useState('Select Semester');
 	const [selectedBranch, setSelectedBranch] = useState('Select Branch');
 	const [openDropdown, setOpenDropdown] = useState(null);
-	const [oemail, setOemail] = useState(userData?.email);
-	const [cemail, setCemail] = useState();
+
+	const [deleteEmail, setDeleteEmail] = useState();
 	const [opass, setOpass] = useState();
 	const [cpass, setCpass] = useState();
+	const [isLoaded, setIsLoaded] = useState(false);
 
 	const [modalOpenesame, setModalOpenesame] = useState(false);
 	const [modalOpeneexists, setModalOpeneexists] = useState(false);
@@ -63,7 +70,7 @@ function Profile() {
 	const handleImageChange = (e) => {
 		const file = e.target.files[0];
 		setImageFile(file);
-		console.log(file);
+		// console.log(file);
 	};
 
 	const navigate = useNavigate();
@@ -107,19 +114,25 @@ function Profile() {
 	const handleTabChange = (tabName) => {
 		setActiveTab(tabName);
 	};
-
-	const imageSrc = userData?.pic ? userData?.pic : pic;
-	console.log(imageSrc);
-	// setImageSrc(userData?.pic);
+	const deleteAccount = async (e) => {
+		e.preventDefault();
+		try {
+			const response = await axiosPrivate.post('deleteAccount', { person, email });
+			console.log(response.data);
+			navigate('/login', { replace: true });
+		} catch (error) {
+			console.log(error);
+		}
+	};
 	const profilemailchange = async (e) => {
 		e.preventDefault();
-		if (oemail === cemail) {
+		if (email === deleteEmail) {
 			console.log('both emails are valid');
 			openModalemailsame();
 		} else {
 			try {
-				console.log(oemail, cemail);
-				const response = await axios.post('http://localhost:5000/profilemailchange', { oemail, cemail });
+				console.log(email, deleteEmail);
+				const response = await axios.post('http://localhost:5000/profilemailchange', { email, deleteEmail });
 				if (response.data === 'failemail') {
 					console.log('email already exists');
 					openModalemailexists();
@@ -154,7 +167,7 @@ function Profile() {
 		if (profilevalidatePassword()) {
 			try {
 				console.log(opass, cpass);
-				const response = await axios.post('http://localhost:5000/profilepasschange', { opass, cpass, oemail });
+				const response = await axios.post('http://localhost:5000/profilepasschange', { opass, cpass, email });
 				if (response.data === 'password not match') {
 					console.log('password not match');
 					openModalpassnotmatch();
@@ -218,10 +231,10 @@ function Profile() {
 		formData.append('person', userData.person);
 		// console.log(person, mail);
 		try {
-			const response = await axiosInstance.post('/profileChange', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
+			const response = await axiosPrivate.post('/profileChange', formData, { headers: { 'Content-Type': 'multipart/form-data' } });
 			if (response.data.status === 'success') {
 				console.log('success');
-				dispatch(setUser(response.data.responseData));
+				dispatch(setUser({ ...userData, ...response.data.responseData }));
 			} else {
 				console.log('fail');
 			}
@@ -259,17 +272,18 @@ function Profile() {
 						<div className="profile-col">
 							<div className="profile-col1">
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.name || ''} />
+									{userData?.name ? <input type="text" name="username" readOnly value={userData?.name || ''} /> : <Skeleton width={200} height={20} style={{ marginTop: '20px' }} />}
 									<label>Username</label>
 									<i className="fa-solid fa-user"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.email || ''} />
+									{userData?.email ? <input type="text" name="username" readOnly value={userData?.email || ''} /> : <Skeleton width={200} height={20} style={{ marginTop: '20px' }} />}
 									<label>E-mail</label>
 									<i className="fa-solid fa-envelope"></i>
 								</div>
 								<div className="profile-input-box b1">
-									<input type="text" name="username" readOnly value={userData?.phoneNo || ''} />
+									{userData?.phoneNo ? <input type="text" name="username" readOnly value={userData?.phoneNo || ''} /> : <Skeleton width={200} height={20} style={{ marginTop: '20px' }} />}
+									{/* <input type="text" name="username" readOnly value={userData?.phoneNo || ''} /> */}
 									<label>Phone</label>
 									<i className="fa-solid fa-phone"></i>
 								</div>
@@ -287,7 +301,8 @@ function Profile() {
 										</>
 									)}
 									<div className="profile-input-box b1">
-										<input type="text" name="username" readOnly value={userData?.branch || ''} />
+										{userData?.branch ? <input type="text" name="username" readOnly value={userData?.branch || ''} /> : <Skeleton width={200} height={20} style={{ marginTop: '20px' }} />}
+										{/* <input type="text" name="username" readOnly value={userData?.branch || ''} /> */}
 										<label>branch</label>
 									</div>
 								</div>
@@ -295,7 +310,17 @@ function Profile() {
 							<div className="profile-col2">
 								<p>profile Pic</p>
 								<div className="profile-round">
-									<div className="profile-wrapper">{imageSrc && <img src={imageSrc} alt="Image" />}</div>
+									<div className="profile-wrapper">
+										{!isLoaded && <Skeleton circle={true} height={250} width={250} />}
+										<img
+											src={imageSrc}
+											alt="logo"
+											onLoad={() => setIsLoaded(true)}
+											style={{
+												display: isLoaded ? 'block' : 'none',
+											}}
+										/>
+									</div>
 								</div>
 								<p></p>
 							</div>
@@ -378,7 +403,7 @@ function Profile() {
 										<i className="fa-solid fa-envelope"></i>
 									</div>
 									<div className="profile-input-box-account b1">
-										<input type="text" name="username" placeholder="Enter New E-mail" onChange={(e) => setCemail(e.target.value)} />
+										<input type="text" name="username" placeholder="Enter New E-mail" onChange={(e) => setDeleteEmail(e.target.value)} />
 										<label>Email</label>
 										<i className="fa-solid fa-envelope"></i>
 									</div>
@@ -515,10 +540,10 @@ function Profile() {
 				<div className={activeTab === 'Delete' ? 'profile-values-box pofile-show-active' : 'profile-values-box'}>
 					<div className="profile-account-col">
 						<div className="profile-col1">
-							<form method="post" onSubmit={profilemailchange}>
+							<form method="post" onSubmit={deleteAccount}>
 								<div className="profile-email-change">
 									<div className="profile-input-box-account b1">
-										<input type="text" name="username" placeholder="Enter E-mail" onChange={(e) => setCemail(e.target.value)} />
+										<input type="text" name="username" placeholder="Enter E-mail" onChange={(e) => setDeleteEmail(e.target.value)} />
 										<label>Email</label>
 										<i className="fa-solid fa-envelope"></i>
 									</div>

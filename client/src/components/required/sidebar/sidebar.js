@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './sidebar.css';
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 import { Link, useLocation } from 'react-router-dom';
 // import io from 'socket.io-client';
 import { useSelector } from 'react-redux';
@@ -11,11 +13,11 @@ import defaultPic from '../images/sidebar/user.png';
 
 // const socket = io.connect('http://localhost:5000');
 function Sidebar() {
-	// const { name, pic, email, phoneNo, year, branch, semester, person, token } = useGlobalContext();
 	const userData = useSelector((state) => state.user);
-	console.log(userData);
+	console.log(userData?.accessToken?.slice(-10));
 	const location = useLocation();
-	// const [profilePhoto, setProfilePhoto] = useState(null);
+	const [isLoaded, setIsLoaded] = useState(false);
+
 	const [labels, setLabels] = useState({
 		bookmarks: 'My Bookmarks',
 		library: 'Library',
@@ -24,10 +26,6 @@ function Sidebar() {
 	});
 
 	useEffect(() => {
-		// const response = axiosInstance.get('user-details', { headers: { Authorization: `Bearer ${token}` } });
-		// response.then((response) => {
-		// 	console.log(response.data);
-		// });
 		const handleResize = () => {
 			if (window.innerWidth <= 950) {
 				setLabels({
@@ -76,12 +74,17 @@ function Sidebar() {
 		<div className="sidebar-container">
 			<div className="sidebar">
 				<div className="sidebar-logo">
-					{/* <div className="sidebar-logo1"> */}
-					{/* <div className="sidebar-image"> */}
-					<img src={userData?.pic || defaultPic} alt="logo" />
-					{/* </div> */}
+					{!isLoaded && <Skeleton circle={true} height={40} width={40} />}
+					<img
+						src={userData.pic}
+						alt="logo"
+						onLoad={() => setIsLoaded(true)}
+						style={{
+							display: isLoaded ? 'block' : 'none',
+						}}
+					/>
+					{/* {userData?.pic ? <img src={userData.pic} alt="logo" onLoad={() => setIsLoaded(true)} /> : <Skeleton circle={true} height={50} width={50} />} */}
 					<h2 className="sidebar-user-name">{userData?.name || 'user'}</h2>
-					{/* </div> */}
 				</div>
 				<ul className="sidebar-links links1">
 					<li className={isActive('/user')}>

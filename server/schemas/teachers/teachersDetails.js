@@ -14,7 +14,7 @@ const TeachersSchema = new mongoose.Schema({
 	branch: String,
 	person: String,
 
-	refreshToken: [String],
+	refreshToken: String, //9985967614 rajini
 	pic: {
 		pic_url: String,
 		pic_name: String,

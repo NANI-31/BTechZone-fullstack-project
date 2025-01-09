@@ -1,6 +1,7 @@
 const teachersdetails = require('../schemas/teachers/teachersDetails');
 const studentsdetails = require('../schemas/students/studentsDetails');
 const { uploadImageToS3, getImageFromS3 } = require('../utils/uplod');
+
 const poppler = require('pdf-poppler');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
@@ -36,6 +37,9 @@ exports.home = async (req, res) => {
 };
 
 exports.profileChange = async (req, res) => {
+	console.log('profile change api called');
+	// const authHeader = req.headers;
+	// console.log('authHeader: ', authHeader);
 	const imgBuffer = req.file?.buffer;
 	const imgMime = req.file?.mimetype;
 	const { name, phoneno, branch, email, person } = req.body;
@@ -137,7 +141,16 @@ exports.profileChange = async (req, res) => {
 		// 	const contentType = existingUser.contentType;
 		// 	imageData = `data:${contentType};base64,${base64Data}`;
 		// }
-		const responseData = existingUser;
+		const responseData = {
+			name: existingUser.name,
+			email: existingUser.email,
+			branch: existingUser.branch,
+			phoneno: existingUser.phoneno,
+			person: existingUser.person,
+			pic: {
+				pic_temporary: existingUser.pic.pic_temporary,
+			},
+		};
 		res.send({ message, status: 'success', responseData });
 	} catch (err) {
 		console.error('profilechange-failed', err);
