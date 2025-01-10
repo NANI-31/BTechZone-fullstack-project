@@ -14,7 +14,7 @@ import defaultPic from '../images/sidebar/user.png';
 // const socket = io.connect('http://localhost:5000');
 function Sidebar() {
 	const userData = useSelector((state) => state.user);
-	console.log(userData?.accessToken?.slice(-10));
+	// console.log(userData?.accessToken?.slice(-10));
 	const location = useLocation();
 	const [isLoaded, setIsLoaded] = useState(false);
 

@@ -44,34 +44,41 @@ exports.uploadPdfHandler = async (req, res) => {
 		};
 		const { fileUrl, imageUrl } = await uploadPdfToS3(params);
 		// Save file details in the user's record or another collection
-		const fileData = new TeachersBooksPublicModel({
-			email: user.email,
-			classified: access,
-			files: [
-				{
-					year: year,
-					semester: semester,
-					branch: branch,
-					subject_name: subject,
-					unit_no: unit,
-					file_id: fileId,
-					file_name: originalFileName,
-					file: {
-						file_url: fileUrl,
-						file_temporary: fileName,
-					},
-					image: {
-						image_url: imageUrl,
-						image_temporary: fileName,
-					},
-					uploaded_at: new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })),
+		const fileData = {
+			year: year,
+			semester: semester,
+			branch: branch,
+			subject_name: subject,
+			unit_no: unit,
+			file_id: fileId,
+			file_name: originalFileName,
+			specified_file_name: filename,
+			file: {
+				file_url: fileUrl,
+				file_temporary: fileId,
+			},
+			image: {
+				image_url: imageUrl,
+				image_temporary: fileId,
+			},
+			uploaded_at: new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })),
+		};
+		await TeachersBooksPublicModel.updateOne(
+			{ email: user.email }, // Find the document by email
+			// Remove the conflicting field
+			{
+				$setOnInsert: {
+					email: user.email, // Insert the email if the document is new
+					classified: access, // Insert the classified field if the document is new
 				},
-			],
-		});
+				$push: { files: fileData }, // Add the new file data to the files array
+			},
+			{ upsert: true } // Create a new document if it doesn't exist
+		);
 
 		// user.files.push(fileData); // Assuming a `files` array exists in the user schema
 		// await user.save();
-		await fileData.save();
+		// await fileData.save();
 
 		// Respond with success
 		res.status(200).json({

@@ -10,6 +10,7 @@ import Teachersignup from './components/2 signup/tsignup';
 
 import Login from './components/3 login/login';
 import Sidebar from './components/required/sidebar/sidebar';
+import DisplayDocument from './components/6 library/displayDocument/DisplayDocument';
 
 // import Sverification from './components/4 verification/verification';
 // import Tverification from './components/4 verification/tverification';
@@ -32,7 +33,7 @@ import Sidebar from './components/required/sidebar/sidebar';
 // import Logout from './components/8 logout/Logout';
 
 import PrivateRouting from './components/PrivateRoute';
-import PersistanceLogin from './components/PersistanceLogin';
+// import PersistanceLogin from './components/PersistanceLogin';
 
 const Sverification = lazy(() => import('./components/4 verification/verification'));
 const Tverification = lazy(() => import('./components/4 verification/tverification'));
@@ -61,38 +62,40 @@ function App() {
 					<Routes>
 						{/* <Route path="/" element={<Home />}></Route> */}
 						{/* <Route element={<PublicRouting isjwt={isjwt} />}> */}
-						<Route path="/" element={<Login />}></Route>
-						<Route path="/login" element={<Login />}></Route>
+						<Route path="/" element={<DisplayDocument />}></Route>
+						<Route path="/l" element={<Login />}></Route>
+						<Route path="/loginn" element={<Login />}></Route>
 						<Route path="/verification" element={<Sverification />}></Route>
 						<Route path="/tverification" element={<Tverification />}></Route>
 						{/* </Route> */}
 
 						{/* {isjwt && <Route path="/logout" element={<Logout />}></Route>} */}
 						<Route path="/logout" element={<Logout />}></Route>
-						<Route element={<PersistanceLogin />}>
-							<Route element={<PrivateRouting />}>
-								<Route path="/select-signup" element={<Navigate to="/" />} />
-								<Route path="/student-signup" element={<Navigate to="/" />} />
-								<Route path="/teacher-signup" element={<Navigate to="/" />} />
-								<Route path="/login" element={<Navigate to="/" />} />
-								<Route path="/verification" element={<Navigate to="/" />} />
-								<Route path="/tverification" element={<Navigate to="/" />} />
-								<Route path="/" element={<Navigate to="/user" />} />
+						{/*<Route element={<PersistanceLogin />}>*/}
 
-								<Route path="/user" element={<UserWithSidebar />} />
-								<Route path="/userupload" element={<UserUploadWithSidebar />} />
-								<Route path="/mylibrary" element={<LibraryWithSidebar />} />
-								<Route path="/mybookmarks" element={<BookmarksWithSidebar />} />
-								<Route path="/publiclibrary" element={<PLibraryWithSidebar />} />
-								<Route path="/studentlibrary" element={<SLibraryWithSidebar />} />
-								<Route path="/teacherlibrary" element={<TLibraryWithSidebar />} />
+						<Route element={<PrivateRouting />}>
+							<Route path="/select-signup" element={<Navigate to="/" />} />
+							<Route path="/student-signup" element={<Navigate to="/" />} />
+							<Route path="/teacher-signup" element={<Navigate to="/" />} />
+							<Route path="/login" element={<Navigate to="/" />} />
+							<Route path="/verification" element={<Navigate to="/" />} />
+							<Route path="/tverification" element={<Navigate to="/" />} />
+							<Route path="/" element={<Navigate to="/user" />} />
 
-								<Route path="/profile" element={<UserProfileWithSidebar />} />
-								<Route path="/pverification" element={<Pverification />}></Route>
-								<Route path="/chatting" element={<ChattingWithSidebar />}></Route>
-								{/* <Route path="/logout" element={<Logout />}></Route> */}
-							</Route>
+							<Route path="/user" element={<UserWithSidebar />} />
+							<Route path="/userupload" element={<UserUploadWithSidebar />} />
+							<Route path="/mylibrary" element={<LibraryWithSidebar />} />
+							<Route path="/mybookmarks" element={<BookmarksWithSidebar />} />
+							<Route path="/publiclibrary" element={<PLibraryWithSidebar />} />
+							<Route path="/studentlibrary" element={<SLibraryWithSidebar />} />
+							<Route path="/teacherlibrary" element={<TLibraryWithSidebar />} />
+
+							<Route path="/profile" element={<UserProfileWithSidebar />} />
+							<Route path="/pverification" element={<Pverification />}></Route>
+							<Route path="/chatting" element={<ChattingWithSidebar />}></Route>
+							{/* <Route path="/logout" element={<Logout />}></Route> */}
 						</Route>
+						{/*</Route>*/}
 						{/* <Route path="/chatting" element={<Testing />}></Route> */}
 					</Routes>
 				</Suspense>

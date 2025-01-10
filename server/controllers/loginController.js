@@ -36,7 +36,7 @@ exports.login = async (req, res) => {
 		}
 		const accessToken = generateAccessToken(user.name, user.person);
 		console.log('accessToken:::');
-		console.log(accessToken);
+		// console.log(accessToken);
 
 		const responseData = {
 			name: user.name,
@@ -51,7 +51,7 @@ exports.login = async (req, res) => {
 		};
 		const newRefreshToken = generateRefreshToken(user.name, user.person);
 		console.log('newRefreshToken:::');
-		console.log(newRefreshToken);
+		// console.log(newRefreshToken);
 		if (!accessToken && !newRefreshToken) {
 			return res.status(400).json({ message: 'Login failed' });
 		}

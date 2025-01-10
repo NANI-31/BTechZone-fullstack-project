@@ -164,7 +164,8 @@ exports.getDocumentImagesFromS3 = async (params) => {
 	const { person, userId, fileId, access } = params;
 	const folderPrefix = person;
 	const userFolder = userId;
-	const fileKey = `${folderPrefix}/${userFolder}/documents/pdfsFiles/${access}/Images/${fileId}`;
+	const fileKey = `${folderPrefix}/${userFolder}/documents/pdfsFiles/${access}/Images/${fileId}.jpg`;
+	console.log(fileKey);
 
 	try {
 		const command = new GetObjectCommand({

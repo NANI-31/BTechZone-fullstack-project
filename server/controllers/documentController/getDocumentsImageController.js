@@ -5,6 +5,7 @@ const TeachersBooksPrivateModel = require('../../schemas/teachers/teachersBooksP
 const studentsdetails = require('../../schemas/students/studentsDetails');
 
 exports.getDocumentsImages = async (req, res) => {
+	console.log('getDocumentsImages api called');
 	try {
 		// const { id } = req.params;
 		const { email, person } = req.body;
@@ -15,7 +16,7 @@ exports.getDocumentsImages = async (req, res) => {
 			return res.status(404).json({ message: 'User not found' });
 		}
 		console.log(email);
-		const document = await TeachersBooksPublicModel.findOne({ email: 'siva' });
+		const document = await TeachersBooksPublicModel.findOne({ email });
 
 		// const publicDocuments = await TeachersBooksPublicModel.find({ email });
 		// const privateDocuments = await TeachersBooksPrivateModel.find({ user_id: id }); // Replace with your user schema path
@@ -26,7 +27,7 @@ exports.getDocumentsImages = async (req, res) => {
 		// 		return { ...document.toObject(), url };
 		// 	})
 		// );
-		console.log('documents: ', document.files);
+		// console.log('documents: ', document.files);
 
 		const result = [];
 
@@ -37,14 +38,14 @@ exports.getDocumentsImages = async (req, res) => {
 		const filesWithImages = [];
 
 		for (const file of document.files) {
-			console.log('document.files: ', document.files);
+			// console.log('document.files: ', document.files);
 			const params = {
 				person: person,
 				userId: user.user_id,
 				fileId: file.image.image_temporary,
 				access: 'public',
 			};
-
+			console.log('params: ', params);
 			const imageData = await getDocumentImagesFromS3(params);
 			// filesWithImages.push({ ...file.toObject(), url: imageData });
 			filesWithImages.push({

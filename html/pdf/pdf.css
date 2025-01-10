@@ -1,0 +1,68 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	list-style-type: none;
+}
+.container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	background-color: #36668d;
+}
+li {
+	/* border: 2px solid red; */
+	margin-left: 50px;
+	margin-right: 10px;
+	margin-bottom: 20px;
+	border-radius: 22px;
+	height: 20rem;
+	/* display: flex;
+	flex-direction: column;
+	align-items: center; */
+}
+li:hover {
+	cursor: pointer;
+	background-color: #ffffff10;
+}
+.mylib-pdf {
+	background-color: #e6ebef;
+	width: 185px;
+	height: 165px;
+	border-radius: 23px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.mylib-in {
+	width: 86%;
+	height: 87%;
+	background-color: #ffffff;
+	border-radius: 20px;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+}
+
+.mylib-in img {
+	object-fit: cover;
+	width: 100%;
+	height: 100%;
+}
+
+.mylib-matter {
+	width: 154px;
+	text-align: center;
+	padding: 10px;
+	padding-top: 12px;
+	font-size: 16px;
+}
+
+.mylib-matter p {
+	font-size: large;
+	color: #ffffff;
+	margin-top: 2px;
+	letter-spacing: 1px;
+}
