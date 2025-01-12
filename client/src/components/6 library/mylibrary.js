@@ -26,20 +26,35 @@ function DraggableNavigationMenu() {
 	const [pdfDataPublic, setPdfDataPublic] = useState([]);
 	const [pdfDataRecent, setPdfDataRecent] = useState([]);
 	useEffect(() => {
-		const fetchData3 = async () => {
-			const email = userData.email;
-			const person = userData.person;
-			// console.log(email, person);
-			try {
-				const response = await axiosInstance.post('getDocumentsImage', { email, person });
-				dispatch(setDocuments(response.data.result));
-				console.log(response.data);
-			} catch (error) {
-				console.error('Error fetching data:', error);
-			}
-		};
+		fetchData2();
 		fetchData3();
 	}, []);
+	const fetchData2 = async () => {
+		const email = userData.email;
+		const person = userData.person;
+		const access = 'private';
+		// console.log(email, person);
+		try {
+			const response = await axiosInstance.post('getDocumentsImage', { email, person, access });
+			dispatch(setDocuments({ type: 'private', documents: response.data.result }));
+			console.log(response.data);
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
+	const fetchData3 = async () => {
+		const email = userData.email;
+		const person = userData.person;
+		const access = 'public';
+		// console.log(email, person);
+		try {
+			const response = await axiosInstance.post('getDocumentsImage', { email, person, access });
+			dispatch(setDocuments({ type: 'public', documents: response.data.result }));
+			console.log(response.data);
+		} catch (error) {
+			console.error('Error fetching data:', error);
+		}
+	};
 	const getYearValue = (year, semester) => {
 		let yearValue = 0;
 		switch (year) {
@@ -67,10 +82,10 @@ function DraggableNavigationMenu() {
 	};
 	// console.log(Array.isArray(documentData.documents));
 	// console.log(documentData.documents);
-	const flattenedDocuments = useMemo(() => {
-		if (!Array.isArray(documentData.documents)) return [];
+	const flattenedDocumentsPrivate = useMemo(() => {
+		if (!Array.isArray(documentData.privateDocuments)) return [];
 
-		return documentData.documents
+		return documentData.privateDocuments
 			.map((item) =>
 				item.filesWithImages.map((file) => ({
 					...file.fileDetails,
@@ -85,8 +100,29 @@ function DraggableNavigationMenu() {
 				const yearValueB = getYearValue(b.year, b.semester);
 				return yearValueA - yearValueB;
 			});
-	}, [documentData.documents]);
-	console.log(flattenedDocuments);
+	}, [documentData.privateDocuments]);
+
+	const flattenedDocumentsPublic = useMemo(() => {
+		if (!Array.isArray(documentData.publicDocuments)) return [];
+		console.log(documentData.publicDocuments);
+
+		return documentData.publicDocuments
+			.map((item) =>
+				item.filesWithImages.map((file) => ({
+					...file.fileDetails,
+					...file.image,
+					documentDetails: item.documentDetails,
+					image_url: file.imageUrl,
+				}))
+			)
+			.flat()
+			.sort((a, b) => {
+				const yearValueA = getYearValue(a.year, a.semester);
+				const yearValueB = getYearValue(b.year, b.semester);
+				return yearValueA - yearValueB;
+			});
+	}, [documentData.publicDocuments]);
+	// console.log(flattenedDocuments);
 	const fetchData1 = async () => {
 		const email = userData.email;
 		const person = userData.person;
@@ -99,90 +135,33 @@ function DraggableNavigationMenu() {
 			console.error('Error fetching data:', error);
 		}
 	};
-	const fetchData2 = async () => {
-		const email = userData.email;
-		const person = userData.person;
-		try {
-			const response = await axios.post('http://localhost:5000/userLibrary/mylib-get-private', { email, person });
-			const { pdfData } = response.data;
-			setPdfDataPrivate(pdfData.references);
-		} catch (error) {
-			console.error('Error fetching data:', error);
-		}
-	};
+	// const fetchData2 = async () => {
+	// 	const email = userData.email;
+	// 	const person = userData.person;
+	// 	try {
+	// 		const response = await axios.post('http://localhost:5000/userLibrary/mylib-get-private', { email, person });
+	// 		const { pdfData } = response.data;
+	// 		setPdfDataPrivate(pdfData.references);
+	// 	} catch (error) {
+	// 		console.error('Error fetching data:', error);
+	// 	}
+	// };
 
 	const handlePdfClick = async (uniqueId, accessType) => {
 		try {
 			console.log(uniqueId);
-			// Make API call to send data to the server
-			const response = await axios.post(
-				'http://localhost:5000/userLibrary/libx',
-				{ uniqueId, accessType, person },
-				{
-					responseType: 'blob',
-				}
-			);
+			const response = await axiosInstance.post('userLibrary/libx', { uniqueId, accessType, person }, { responseType: 'blob' });
 			const pdfBlob = new Blob([response.data], { type: 'application/pdf' });
 			const pdfUrl = URL.createObjectURL(pdfBlob);
-
-			// const fileURL = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-			// const pdfUrl = URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-			// const url = URL.createObjectURL(response.data);
 			window.open(pdfUrl, '_blank');
 		} catch (error) {
 			console.error('Error downloading PDF:', error);
 		}
 	};
 
-	// Sort the PDF data based on the year and semester values
-	const sortedPdfPrivateData = pdfDataPrivate.sort((a, b) => {
-		const yearValueA = getYearValue(a.year, a.semester);
-		const yearValueB = getYearValue(b.year, b.semester);
-		return yearValueA - yearValueB;
-	});
-	const sortedPdfPublicData = pdfDataPublic.sort((a, b) => {
-		const yearValueA = getYearValue(a.year, a.semester);
-		const yearValueB = getYearValue(b.year, b.semester);
-		return yearValueA - yearValueB;
-	});
-	const [privateBranchGroups, setPrivateBranchGroups] = useState({});
-	const [publicBranchGroups, setPublicBranchGroups] = useState({});
-	useEffect(() => {
-		// This effect runs whenever pdfDataPrivate changes
-		const updatePrivateBranchGroups = () => {
-			const updatedPrivateBranchGroups = {};
-			sortedPdfPrivateData.forEach((pdf) => {
-				const branch = pdf.branch;
-				if (!updatedPrivateBranchGroups[branch]) {
-					updatedPrivateBranchGroups[branch] = [];
-				}
-				updatedPrivateBranchGroups[branch].push(pdf);
-			});
-			setPrivateBranchGroups(updatedPrivateBranchGroups);
-		};
-
-		const updatePublicBranchGroups = () => {
-			const updatedPublicBranchGroups = {};
-			sortedPdfPublicData.forEach((pdf) => {
-				const branch = pdf.branch;
-				if (!updatedPublicBranchGroups[branch]) {
-					updatedPublicBranchGroups[branch] = [];
-				}
-				updatedPublicBranchGroups[branch].push(pdf);
-			});
-			setPublicBranchGroups(updatedPublicBranchGroups);
-		};
-
-		updatePrivateBranchGroups();
-		updatePublicBranchGroups();
-	}, [pdfDataPrivate, pdfDataPublic]);
-
 	// State for search query
 	const [searchPrivateQuery, setSearchPrivateQuery] = useState('');
 	// Handle search query change
-	const handleSearchPrivateChange = (event) => {
-		setSearchPrivateQuery(event.target.value);
-	};
 
 	// State for search query
 	const [searchPublicQuery, setSearchPublicQuery] = useState('');
@@ -292,19 +271,55 @@ function DraggableNavigationMenu() {
 	};
 	const [pdfFileid, setPdfFileid] = useState();
 	const [recent, setRecent] = useState();
+
+	const removeFile = (fileIdToRemove, access) => {
+		if (access === 'public') {
+			const updatedPublicDocuments = documentData.publicDocuments
+				.map((group) => {
+					// Filter out the file with the matching fileId
+					const updatedFilesWithImages = group.filesWithImages.filter((file) => file.fileDetails.file_id !== fileIdToRemove);
+
+					return {
+						...group,
+						filesWithImages: updatedFilesWithImages,
+					};
+				})
+				.filter((group) => group.filesWithImages.length > 0); // Remove empty groups
+
+			// Update the state
+			dispatch(setDocuments({ type: 'public', documents: updatedPublicDocuments }));
+			console.log('public ok');
+		} else {
+			const updatedPrivateDocuments = documentData.privateDocuments
+				.map((group) => {
+					// Filter out the file with the matching fileId
+					const updatedFilesWithImages = group.filesWithImages.filter((file) => file.fileDetails.file_id !== fileIdToRemove);
+
+					return {
+						...group,
+						filesWithImages: updatedFilesWithImages,
+					};
+				})
+				.filter((group) => group.filesWithImages.length > 0); // Remove empty groups
+
+			// Update the state
+			dispatch(setDocuments({ type: 'private', documents: updatedPrivateDocuments }));
+			console.log('private ok');
+		}
+	};
 	const deletePdf = async (e, value, access) => {
+		const email = userData.email;
 		console.log(person, access, pdfFileid);
 		e.preventDefault();
+		// return;
 		try {
-			const response = await axios.post('http://localhost:5000/userLibrary/delete-PDF', { person, access, pdfFileid });
-			if (response.data === 'ok') {
-				fetchData1();
-				fetchData2();
+			const response = await axiosInstance.post('deleteDcoument', { email, person, access, pdfFileid });
+			console.log(response.data);
+			if (response.data.success === 'true') {
+				removeFile(pdfFileid, access);
+				// fetchData1();
+				// fetchData2();
 				// fetchData3();
-				const updatedPdfData1 = pdfDataPrivate.filter((pdf) => pdf.file_id !== pdfFileid);
-				const updatedPdfData2 = pdfDataPublic.filter((pdf) => pdf.file_id !== pdfFileid);
-				setPdfDataPrivate(updatedPdfData1);
-				setPdfDataPublic(updatedPdfData2);
 				console.log('ok');
 			} else if (response.data == 'no') {
 				console.log('no');
@@ -336,11 +351,7 @@ function DraggableNavigationMenu() {
 		if (response.data === 'ok') {
 			fetchData1();
 			fetchData2();
-			// fetchData3();
-			const updatedPdfData1 = pdfDataPrivate.filter((pdf) => pdf.file_id !== pdfFileid);
-			const updatedPdfData2 = pdfDataPublic.filter((pdf) => pdf.file_id !== pdfFileid);
-			setPdfDataPrivate(updatedPdfData1);
-			setPdfDataPublic(updatedPdfData2);
+			fetchData3();
 			console.log('changed');
 		} else {
 			console.log('fail');
@@ -496,105 +507,100 @@ function DraggableNavigationMenu() {
 								<div className="mylib-row1-header">
 									<h1>Private Uploads</h1>
 									<div className="mylib-search">
-										<input type="text" placeholder="Search PDFs" value={searchPrivateQuery} required onChange={handleSearchPrivateChange} />
+										<input type="text" placeholder="Search PDFs" value={searchPrivateQuery} required onChange={(e) => setSearchPrivateQuery(e.target.value)} />
 										<div className="mylib-search-icon">
 											<i className="fa-solid fa-magnifying-glass"></i>
 										</div>
 									</div>
 								</div>
-								{Object.keys(privateBranchGroups).map((branch) => (
-									<div key={branch}>
-										<h2 className="mylib-starts-branch">{branch}</h2>
-										<ul className="branch-list">
-											{privateBranchGroups[branch].map((pdf, index) => {
-												// Check if any value in the PDF matches the search query
-												const matchesSearch = Object.values(pdf).some((value) => {
-													if (typeof value === 'string') {
-														return value.toLowerCase().includes(searchPrivateQuery.toLowerCase());
-													}
-													return false;
-												});
+								<ul className="branch-list">
+									{flattenedDocumentsPrivate.map((pdf, index) => {
+										// Filter documents based on the search query
+										const matchesSearch = Object.values(pdf).some((value) => {
+											if (typeof value === 'string') {
+												return value.toLowerCase().includes(searchPublicQuery.toLowerCase());
+											}
+											return false;
+										});
 
-												// If there's no search query or the PDF matches the search query, render it
-												if (!searchPrivateQuery || matchesSearch) {
-													return (
-														<li key={index} className="row">
-															<div className="mylib-pdf" ref={mylibPdfRef} onClick={() => handlePdfClick(pdf.file_id, 'private')}>
-																<div className="ss">
-																	<div className="options-icon" onClick={(event) => handleOptionsIconClick(index, true, false, false, event)}>
-																		<i className="fa-solid fa-ellipsis-vertical"></i>
-																	</div>
-																	<div className={`options ${privateOptionsListActiveIndex === index ? 'active-options-list' : ''}`}>
-																		<p
-																			onClick={(event) => {
-																				event.stopPropagation();
-																				handleOptionItemClick(true, false, false);
-																				openModaldeletepriv();
-																				setPdfFileid(pdf.file_id);
-																			}}
-																			onMouseEnter={() => handleToolTip(index, true, false, false, true)}
-																			onMouseLeave={() => handleToolTipclose()}
-																		>
-																			<i className="fa-solid fa-trash"></i>
-																		</p>
-																		<p
-																			onClick={(event) => {
-																				event.stopPropagation();
-																				handleOptionItemClick(true, false, false);
-																				handlechangepdftype(event, pdf.file_id, 'private');
-																			}}
-																			onMouseEnter={() => handleToolTip(index, false, true, false, true)}
-																			onMouseLeave={() => handleToolTipclose()}
-																		>
-																			<i className="fa-solid fa-lock-open"></i>
-																		</p>
-																		<p
-																			onClick={(event) => {
-																				event.stopPropagation();
-																				handleOptionItemClick(true, false, false);
-																			}}
-																			onMouseEnter={() => handleToolTip(index, false, false, true, true)}
-																			onMouseLeave={() => handleToolTipclose()}
-																		>
-																			<i className="fa-regular fa-bookmark"></i>
-																		</p>
-																	</div>
-																</div>
-
-																<div className={`tips1 ${deletetool === index ? 'tips-show-active' : ''}`}>
-																	<span className="tooltiptext1 ">delete</span>
-																</div>
-
-																<div className={`tips2 ${movetool === index ? 'tips-show-active' : ''}`}>
-																	<span className="tooltiptext2">Make Public</span>
-																</div>
-																<div className={`tips3 ${bookmarktool === index ? 'tips-show-active' : ''}`}>
-																	<span className="tooltiptext3">Bookmark</span>
-																</div>
-
-																<div className="mylib-in">
-																	<img src="a.jpg" alt="alt" />
-																</div>
-																<div className="mylib-matter">
-																	<p>{pdf.year}</p>
-																	<p>{pdf.semester}</p>
-																	<p>
-																		{pdf.branch},{pdf.subject_name}
-																	</p>
-																	<p>
-																		{pdf.unit_no},{`ref{${pdf.refer}}`}
-																	</p>
-																</div>
+										// If there's no search query or the PDF matches the search query, render it
+										if (!searchPrivateQuery || matchesSearch) {
+											return (
+												<li key={pdf.file_id || index} className="row">
+													<div className="mylib-pdf" ref={mylibPdfRef} onClick={() => handlePdfClick(pdf.file_id, 'private')}>
+														<div className="ss">
+															<div className="options-icon" onClick={(event) => handleOptionsIconClick(index, true, false, false, event)}>
+																<i className="fa-solid fa-ellipsis-vertical"></i>
 															</div>
-														</li>
-													);
-												} else {
-													return null; // Skip rendering this PDF
-												}
-											})}
-										</ul>
-									</div>
-								))}
+															<div className={`options ${privateOptionsListActiveIndex === index ? 'active-options-list' : ''}`}>
+																<p
+																	onClick={(event) => {
+																		event.stopPropagation();
+																		handleOptionItemClick(true, false, false);
+																		openModaldeletepriv();
+																		setPdfFileid(pdf.file_id);
+																	}}
+																	onMouseEnter={() => handleToolTip(index, true, false, false, true)}
+																	onMouseLeave={() => handleToolTipclose()}
+																>
+																	<i className="fa-solid fa-trash"></i>
+																</p>
+																<p
+																	onClick={(event) => {
+																		event.stopPropagation();
+																		handleOptionItemClick(true, false, false);
+																		handlechangepdftype(event, pdf.file_id, 'private');
+																	}}
+																	onMouseEnter={() => handleToolTip(index, false, true, false, true)}
+																	onMouseLeave={() => handleToolTipclose()}
+																>
+																	<i className="fa-solid fa-lock-open"></i>
+																</p>
+																<p
+																	onClick={(event) => {
+																		event.stopPropagation();
+																		handleOptionItemClick(true, false, false);
+																	}}
+																	onMouseEnter={() => handleToolTip(index, false, false, true, true)}
+																	onMouseLeave={() => handleToolTipclose()}
+																>
+																	<i className="fa-regular fa-bookmark"></i>
+																</p>
+															</div>
+														</div>
+
+														<div className={`tips1 ${deletetool === index ? 'tips-show-active' : ''}`}>
+															<span className="tooltiptext1 ">delete</span>
+														</div>
+
+														<div className={`tips2 ${movetool === index ? 'tips-show-active' : ''}`}>
+															<span className="tooltiptext2">Make Public</span>
+														</div>
+														<div className={`tips3 ${bookmarktool === index ? 'tips-show-active' : ''}`}>
+															<span className="tooltiptext3">Bookmark</span>
+														</div>
+
+														<div className="mylib-in">
+															<img src={pdf.image_url} alt="Document Thumbnail" />
+														</div>
+													</div>
+													<div className="mylib-matter">
+														<p>{pdf.year}</p>
+														<p>{pdf.semester}</p>
+														<p>
+															{pdf.branch},{pdf.subject_name}
+														</p>
+														<p>
+															{pdf.unit_no},{`ref{${pdf.refer}}`}
+														</p>
+													</div>
+												</li>
+											);
+										} else {
+											return null; // Skip rendering this PDF
+										}
+									})}
+								</ul>
 							</div>
 							<div id="myModal" className="modal" style={{ display: modalOpendeletepriv ? 'block' : 'none' }} onClick={handleOutsideClick}>
 								<div className="modal-content">
@@ -641,7 +647,7 @@ function DraggableNavigationMenu() {
 								</div>
 
 								<ul className="branch-list">
-									{flattenedDocuments.map((pdf, index) => {
+									{flattenedDocumentsPublic.map((pdf, index) => {
 										// Filter documents based on the search query
 										const matchesSearch = Object.values(pdf).some((value) => {
 											if (typeof value === 'string') {
@@ -655,7 +661,7 @@ function DraggableNavigationMenu() {
 											return (
 												<li key={pdf.file_id || index} className="row">
 													<div className="mylib-pdf" ref={mylibPdfRef} onClick={() => handlePdfClick(pdf.file_id, 'public')}>
-														{/* <div className="ss">
+														<div className="ss">
 															<div className="options-icon" onClick={(event) => handleOptionsIconClick(index, false, true, false, event)}>
 																<i className="fa-solid fa-ellipsis-vertical"></i>
 															</div>
@@ -704,7 +710,7 @@ function DraggableNavigationMenu() {
 														</div>
 														<div className={`tips3 ${bookmarktoolp === index ? 'tips-show-active' : ''}`}>
 															<span className="tooltiptext3">Bookmark</span>
-														</div> */}
+														</div>
 
 														<div className="mylib-in">
 															<img src={pdf.image_url} alt="Document Thumbnail" />

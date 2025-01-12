@@ -1,4 +1,5 @@
 const { default: mongoose } = require('mongoose');
+
 const FileSchema = new mongoose.Schema({
 	year: String,
 	semester: String,
@@ -52,6 +53,7 @@ const FileSchema = new mongoose.Schema({
 		},
 	},
 });
+
 const teachersBooksPublicSchema = new mongoose.Schema({
 	email: String,
 	classified: String,

@@ -18,12 +18,12 @@ function Login() {
 	useEffect(() => {
 		refe.current.focus();
 		refp.current.focus();
-		refe.current.value = 'a';
-		refp.current.value = 'a';
+		// refe.current.value = 'a';
+		// refp.current.value = 'a';
 	});
 	// const { setName, setMail, setPic, setPhoneNo, setYear, setBranch, setSemester, setPerson, setToken } = useGlobalContext();
-	const [email, setEmail] = useState('a');
-	const [password, setPassword] = useState('a');
+	const [email, setEmail] = useState();
+	const [password, setPassword] = useState();
 	const [modalOpene, setModalOpene] = useState(false);
 	const [modalOpenp, setModalOpenp] = useState(false);
 	const { setCustomeCookie } = useSetCookie();

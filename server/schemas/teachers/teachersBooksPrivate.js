@@ -8,6 +8,7 @@ const FileSchema = new mongoose.Schema({
 	unit_no: String,
 	file_id: { type: String, required: true },
 	file_name: { type: String, required: true },
+	specified_file_name: { type: String, required: true },
 	file: {
 		file_url: { type: String, required: true },
 		file_temporary: { type: String, required: true },
@@ -15,6 +16,10 @@ const FileSchema = new mongoose.Schema({
 	image: {
 		image_url: { type: String, required: true },
 		image_temporary: { type: String, required: true },
+	},
+	refer: {
+		type: Number,
+		default: 0,
 	},
 
 	uploaded_at: { type: Date, default: Date.now },

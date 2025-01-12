@@ -74,7 +74,7 @@ function Verification() {
 		try {
 			const otpcode = values.join('');
 			console.log(otpcode, email, 'client');
-			const response = await axiosInstance.post('verifyEmail', { otpcode, email });
+			const response = await axiosInstance.post('register/verifyEmail', { otpcode, email });
 			console.log(response.data);
 			navigate('/login');
 			// .then(response => {

@@ -200,7 +200,30 @@ exports.getDocumentImagesFromS3 = async (params) => {
 		throw new Error('Image retrieval failed');
 	}
 };
-
+exports.deleteDocumentFromS3 = async (params) => {
+	console.log('deleteDocumentFromS3 triggered');
+	const { person, userId, fileId, access } = params;
+	const folderPrefix = person;
+	const userFolder = userId;
+	const fileKey = `${folderPrefix}/${userFolder}/documents/pdfsFiles/${access}/Files/${fileId}.pdf`;
+	const imageKey = `${folderPrefix}/${userFolder}/documents/pdfsFiles/${access}/Images/${fileId}.jpg`;
+	try {
+		const command = new DeleteObjectCommand({
+			Bucket: bucketName,
+			Key: fileKey,
+		});
+		await s3Client.send(command);
+		const imageCommand = new DeleteObjectCommand({
+			Bucket: bucketName,
+			Key: imageKey,
+		});
+		await s3Client.send(imageCommand);
+		console.log('File deleted from S3 successfully');
+	} catch (error) {
+		console.error('Error deleting file from S3:', error);
+		throw new Error('File deletion failed');
+	}
+};
 exports.deleteUserFroms3 = async (userId) => {
 	const folderPath = `teacher/${userId}/`;
 

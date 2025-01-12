@@ -12,13 +12,15 @@ exports.uploadPdfHandler = async (req, res) => {
 	// return res.status(200).json({ message: 'api called' });
 	try {
 		const { email, year, semester, branch, subject, unit, filename, value, person } = req.body; // Assuming `email` and `access` are sent in the request body
-
 		// const { pdfBuffer, imageBuffer, fileMimeType, imageMimeType } = req.files; // Assuming files are sent as buffers
-		const access = value ? 'public' : 'private';
+		console.log(value);
+		const access = value === 'true' ? 'public' : 'private';
+		console.log(access);
 		const pdfBuffer = req.file?.buffer;
 		const pdfMimeType = req.file?.mimeType;
 		const originalFileName = req.file?.originalname;
 		const User = person === 'student' ? studentsdetails : teachersdetails;
+		const Model = access === 'public' ? TeachersBooksPublicModel : TeachersBooksPrivateModel;
 		// Find user by email
 		const user = await User.findOne({ email });
 		if (!user) {
@@ -63,7 +65,7 @@ exports.uploadPdfHandler = async (req, res) => {
 			},
 			uploaded_at: new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Kolkata' })),
 		};
-		await TeachersBooksPublicModel.updateOne(
+		await Model.updateOne(
 			{ email: user.email }, // Find the document by email
 			// Remove the conflicting field
 			{

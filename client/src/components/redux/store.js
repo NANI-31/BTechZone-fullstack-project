@@ -3,6 +3,7 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 // import storage from 'redux-persist/lib/storage';
 import userReducer from './slices/states/userSlice';
 import documentReducer from './slices/states/documentsSlice';
+import socketReducer from './slices/states/socketSlice';
 
 // Persist configuration
 // const persistConfig = {
@@ -34,7 +35,12 @@ const store = configureStore({
 		// user: rootReducer.userReducer,
 		user: userReducer,
 		document: documentReducer,
+		socket: socketReducer,
 	},
+	middleware: (getDefaultMiddleware) =>
+		getDefaultMiddleware({
+			serializableCheck: false, // Disable serializable check
+		}),
 });
 
 export default store;

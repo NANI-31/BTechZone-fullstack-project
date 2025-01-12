@@ -4,6 +4,7 @@ import axios from '../utils/axiosConfig';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../redux/slices/states/userSlice';
+import { logout } from '../redux/slices/states/socketSlice';
 
 const Logout = () => {
 	const location = useLocation();
@@ -17,6 +18,7 @@ const Logout = () => {
 		localStorage.removeItem('userToken');
 		removeCustomeCookie('token');
 		dispatch(clearUser());
+		dispatch(logout());
 		axios.get('logout', { person }).then((response) => {
 			console.log(response.data);
 		});

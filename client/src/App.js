@@ -62,9 +62,10 @@ function App() {
 					<Routes>
 						{/* <Route path="/" element={<Home />}></Route> */}
 						{/* <Route element={<PublicRouting isjwt={isjwt} />}> */}
-						<Route path="/" element={<DisplayDocument />}></Route>
-						<Route path="/l" element={<Login />}></Route>
-						<Route path="/loginn" element={<Login />}></Route>
+						{/* <Route path="/" element={<DisplayDocument />}></Route> */}
+						<Route path="/" element={<Login />}></Route>
+						<Route path="/login" element={<Login />}></Route>
+						<Route path="/select-signup" element={<Signupselect />}></Route>
 						<Route path="/verification" element={<Sverification />}></Route>
 						<Route path="/tverification" element={<Tverification />}></Route>
 						{/* </Route> */}

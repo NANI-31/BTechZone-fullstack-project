@@ -8,15 +8,16 @@ exports.getDocumentsImages = async (req, res) => {
 	console.log('getDocumentsImages api called');
 	try {
 		// const { id } = req.params;
-		const { email, person } = req.body;
+		const { email, person, access } = req.body;
 		const User = person === 'student' ? studentsdetails : teachersdetails;
 		const user = await User.findOne({ email });
 
 		if (!user) {
 			return res.status(404).json({ message: 'User not found' });
 		}
-		console.log(email);
-		const document = await TeachersBooksPublicModel.findOne({ email });
+		// console.log(email);
+		const Model = access === 'public' ? TeachersBooksPublicModel : TeachersBooksPrivateModel;
+		const document = await Model.findOne({ email });
 
 		// const publicDocuments = await TeachersBooksPublicModel.find({ email });
 		// const privateDocuments = await TeachersBooksPrivateModel.find({ user_id: id }); // Replace with your user schema path
@@ -43,7 +44,7 @@ exports.getDocumentsImages = async (req, res) => {
 				person: person,
 				userId: user.user_id,
 				fileId: file.image.image_temporary,
-				access: 'public',
+				access: access,
 			};
 			console.log('params: ', params);
 			const imageData = await getDocumentImagesFromS3(params);
