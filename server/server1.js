@@ -1,27 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const { app, server } = require('./socket/index');
 const jwt = require('jsonwebtoken');
 const teachersDetails = require('./schemas/teachers/teachersDetails');
 
 const cokkieParser = require('cookie-parser');
 
-const http = require('http');
-const { Server } = require('socket.io');
-
 require('dotenv').config();
 
 require('./config/db');
 
-const app = express();
+// const app = express();`
 
-const server = http.createServer(app);
-const io = new Server(server, {
-	cors: {
-		origin: 'http://localhost:3000',
-		credentials: true,
-	},
-});
 app.use(express.json());
 
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
@@ -40,28 +31,13 @@ app.use('/persistData', require('./routes/persistRoute'));
 app.use('/pdfUpload', require('./routes/api/documentUploadRoute'));
 app.use('/getDocumentsImage', require('./routes/api/getDocumentsImageRoute'));
 app.use('/deleteDcoument', require('./routes/api/deleteDocumentRoute'));
+app.use('/getChatUsers', require('./routes/api/getChatUsersRoute'));
 const verifyJWT = require('./middlewares/verifyJWT');
 app.use(verifyJWT);
 
 app.use('/profileChange', require('./routes/api/users'));
 
 app.use('/deleteAccount', require('./routes/accountDeleteRoute'));
-
-// Socket.IO for Chatting
-io.on('connection', (socket) => {
-	console.log(`User connected: ${socket.id}`);
-
-	// Listen for messages from the client
-	socket.on('send_message', (data) => {
-		// console.log('Message received:', data);
-		// Broadcast message to other connected clients
-		socket.broadcast.emit('receive_message', data);
-	});
-
-	socket.on('disconnect', () => {
-		console.log(`User disconnected: ${socket.id}`);
-	});
-});
 
 server.listen(process.env.PORT || 5000, () => {
 	console.log(`server is running on ${process.env.PORT}`);

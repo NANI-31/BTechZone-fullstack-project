@@ -83,6 +83,7 @@ exports.uploadImageToS3 = async (buffer, mimetype, fileName, user) => {
 
 exports.getImageFromS3 = async (key, user) => {
 	console.log('getImageFromS3 triggered');
+	console.log('key', key);
 	const folderPrefix = user.person;
 	const userFolder = user.user_id;
 	const fileKey = `${folderPrefix}/${userFolder}/pic/${key}`;
@@ -91,9 +92,25 @@ exports.getImageFromS3 = async (key, user) => {
 			Bucket: bucketName,
 			Key: fileKey,
 		});
+		// const response = await s3Client.send(command);
+		// if (response.Body) {
+		// 	const chunks = [];
+		// 	for await (const chunk of response.Body) {
+		// 		chunks.push(chunk);
+		// 	}
+		// 	const fileBuffer = Buffer.concat(chunks);
+		// 	const imageData = Buffer.from(fileBuffer, 'base64');
+		// 	const base64Image = imageData.toString('base64');
+		// 	const mimeType = 'image/jpeg';
+		// 	// const imageBuffer = Buffer.from(base64Image, 'base64');
+		// 	const url = `data:${mimeType};base64,${base64Image}`;
+		// 	console.log('File retrieved from S3 in chunks');
+		// 	return url;
+		// } else {
 		const url = await getSignedUrl(s3Client, command, { expiresIn: 36000 });
-		// console.log('Image retrieved from S3:');
-		// console.log('Image retrieved from S3:', url);
+		console.log('File retrieved from S3 in chunks');
+		return url;
+		// }
 		return url;
 	} catch (error) {
 		console.error('Error getting image from S3:', error);

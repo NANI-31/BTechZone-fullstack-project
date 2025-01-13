@@ -1,11 +1,12 @@
 import { useSelector } from 'react-redux';
-
+import { axiosInstance } from '../utils/axiosConfig';
 import GroupsIconTwo from '../required/svg/GroupsIconTwo';
 import React, { useState, useEffect, useRef } from 'react';
 import { BsCameraVideo } from 'react-icons/bs';
 
 function ChatBody() {
 	const socket = useSelector((state) => state.socket.socketConnection);
+	const currentRef = useRef(null);
 
 	const [message, setMessage] = useState('');
 	const [chat, setChat] = useState([]);
@@ -31,6 +32,9 @@ function ChatBody() {
 			sendMessage(); // Call sendMessage when Enter is pressed
 		}
 	};
+	useEffect(() => {
+		currentRef.current?.scrollIntoView({ behavior: 'smooth' });
+	}, [chat]);
 
 	return (
 		<div className="chatting-container">
@@ -56,7 +60,7 @@ function ChatBody() {
 			</div>
 			<div className="chatting-msgs-container ">
 				{/* <div className="chatting-msgs"> */}
-				<div className="chatting-msgs">
+				<div className="chatting-msgs" ref={currentRef}>
 					{chat.map((msg, index) => (
 						<div className={` ${msg.sender === 'You' ? 'ml-auto bg-teal-100 chatting-msgs-you css' : 'chatting-msgs-other css bg-white'}`}>
 							<p key={index} className="px-2">
